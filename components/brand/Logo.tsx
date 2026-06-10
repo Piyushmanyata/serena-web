@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 interface LogoProps {
@@ -6,22 +7,51 @@ interface LogoProps {
 }
 
 const sizes = {
-  sm: "text-xl",
-  md: "text-2xl",
-  lg: "text-4xl",
-  xl: "text-6xl md:text-7xl",
+  sm: {
+    src: "/serena-logo-mark.png",
+    width: 247,
+    height: 101,
+    className: "w-[112px] sm:w-[124px]",
+  },
+  md: {
+    src: "/serena-logo.jpg",
+    width: 1600,
+    height: 416,
+    className: "w-[220px] sm:w-[248px]",
+  },
+  lg: {
+    src: "/serena-logo.jpg",
+    width: 1600,
+    height: 416,
+    className: "w-[300px] sm:w-[360px] md:w-[420px]",
+  },
+  xl: {
+    src: "/serena-logo.jpg",
+    width: 1600,
+    height: 416,
+    className: "w-[340px] sm:w-[440px] md:w-[560px] lg:w-[640px]",
+  },
 };
 
 export function Logo({ className = "", size = "md" }: LogoProps) {
+  const variant = sizes[size];
+
   return (
     <Link
       href="/"
-      className={`font-serif font-bold tracking-[0.2em] uppercase select-none ${sizes[size]} ${className}`}
-      style={{ color: "var(--serena-deep-burgundy)" }}
+      className={`inline-flex items-center select-none ${className}`}
       aria-label="SERENA — Home"
     >
-      <span className="text-gold-gradient">S</span>
-      <span>ERENA</span>
+      <span className={`block ${variant.className}`}>
+        <Image
+          src={variant.src}
+          alt="SERENA logo"
+          width={variant.width}
+          height={variant.height}
+          className="h-auto w-full"
+          priority={size === "sm"}
+        />
+      </span>
     </Link>
   );
 }

@@ -136,30 +136,6 @@ section {
 
 /* ─── NEW ANIMATIONS ────────────────────────────────────────── */
 
-/* THE MAIN SWIRL: emojis spiral INTO the jar */
-@keyframes emojiSpiral {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg) translateX(var(--orbit-r, 150px)) rotate(0deg) scale(1);
-    opacity: 0.95;
-  }
-  88% {
-    transform: translate(-50%, -50%) rotate(1440deg) translateX(4px) rotate(-1440deg) scale(0.2);
-    opacity: 0.4;
-  }
-  93% {
-    transform: translate(-50%, -50%) rotate(1600deg) translateX(0px) rotate(-1600deg) scale(0);
-    opacity: 0;
-  }
-  93.5% {
-    transform: translate(-50%, -50%) rotate(0deg) translateX(var(--orbit-r, 150px)) rotate(0deg) scale(0);
-    opacity: 0;
-  }
-  100% {
-    transform: translate(-50%, -50%) rotate(0deg) translateX(var(--orbit-r, 150px)) rotate(0deg) scale(1);
-    opacity: 0.95;
-  }
-}
-
 /* Orbit without spiraling (background rings) */
 @keyframes emojiOrbit {
   from { transform: translate(-50%, -50%) rotate(0deg) translateX(var(--orbit-r, 150px)) rotate(0deg); }

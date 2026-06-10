@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { JarSVG } from "@/components/brand/Logo";
+import { JarSVG, Logo } from "@/components/brand/Logo";
 import { JarCard } from "@/components/product/JarCard";
 import { getFeaturedProducts } from "@/lib/products";
 import { createWhatsAppLink, generalMessage } from "@/lib/whatsapp";
@@ -24,40 +24,16 @@ const TESTIMONIALS = [
   { text: "Got it as a birthday gift — best surprise I've received. The mystery made it SO special.", name: "Shreya P.", vibe: "Ocean Breeze" },
 ];
 
-// Large prominent swirling emoji config
-const SWIRL_CONFIG = [
-  { emoji: "💍", r: 185, delay: 0,    duration: 12, size: "2.4rem" },
-  { emoji: "📿", r: 155, delay: 1.3,  duration: 13.5, size: "2.1rem" },
-  { emoji: "✨", r: 210, delay: 3.2,  duration: 11, size: "2.6rem" },
-  { emoji: "🪙", r: 130, delay: 0.7,  duration: 14, size: "2.2rem" },
-  { emoji: "💫", r: 175, delay: 2.1,  duration: 10.5, size: "2.8rem" },
-  { emoji: "🔮", r: 145, delay: 4.1,  duration: 15, size: "2.2rem" },
-  { emoji: "🌸", r: 195, delay: 1.0,  duration: 11.5, size: "2.1rem" },
-  { emoji: "🌙", r: 165, delay: 5.2,  duration: 12.5, size: "2.5rem" },
-  { emoji: "💎", r: 220, delay: 1.8,  duration: 13, size: "2.0rem" },
-  { emoji: "⛓️", r: 140, delay: 3.6,  duration: 14.5, size: "2.2rem" },
-  { emoji: "🌟", r: 180, delay: 6.1,  duration: 11, size: "2.0rem" },
-  { emoji: "🪬", r: 160, delay: 0.4,  duration: 13, size: "2.1rem" },
-  { emoji: "💝", r: 135, delay: 5.7,  duration: 14, size: "2.3rem" },
-  { emoji: "🌺", r: 200, delay: 2.8,  duration: 11.5, size: "2.0rem" },
-  { emoji: "✦",  r: 125, delay: 7.1,  duration: 10, size: "2.4rem" },
-  { emoji: "🍃", r: 190, delay: 4.5,  duration: 12, size: "2.0rem" },
-];
-
-// Background scatter emojis (fixed positions, float gently)
-const BG_EMOJIS = [
-  { x: 3,  y: 18, emoji: "💎", size: "2rem",  delay: 0   },
-  { x: 9,  y: 48, emoji: "📿", size: "1.9rem", delay: 1.2 },
-  { x: 14, y: 78, emoji: "🌙", size: "1.7rem", delay: 2.5 },
-  { x: 22, y: 28, emoji: "💫", size: "2.3rem", delay: 0.5 },
-  { x: 6,  y: 63, emoji: "🔮", size: "1.8rem", delay: 3.1 },
-  { x: 18, y: 55, emoji: "✨", size: "2.1rem", delay: 1.8 },
-  { x: 83, y: 12, emoji: "✨", size: "2.0rem", delay: 1.0 },
-  { x: 91, y: 38, emoji: "🌸", size: "1.8rem", delay: 2.0 },
-  { x: 87, y: 68, emoji: "💍", size: "2.2rem", delay: 0.8 },
-  { x: 77, y: 82, emoji: "🪙", size: "1.7rem", delay: 4.0 },
-  { x: 96, y: 55, emoji: "💎", size: "1.9rem", delay: 2.8 },
-  { x: 73, y: 22, emoji: "🌟", size: "2.0rem", delay: 3.5 },
+// Subtle hero confetti: fixed, ambient, and never enters the jar.
+const HERO_DECOR = [
+  { emoji: "✨", x: 7, y: 12, size: "1.2rem", delay: 0.2 },
+  { emoji: "💫", x: 15, y: 24, size: "1.15rem", delay: 1.5 },
+  { emoji: "🌸", x: 10, y: 78, size: "1.1rem", delay: 2.1 },
+  { emoji: "💎", x: 86, y: 16, size: "1.2rem", delay: 0.9 },
+  { emoji: "🌙", x: 92, y: 34, size: "1.05rem", delay: 2.7 },
+  { emoji: "✦", x: 83, y: 74, size: "1.15rem", delay: 1.8 },
+  { emoji: "🪙", x: 20, y: 6, size: "1rem", delay: 3.2 },
+  { emoji: "🌟", x: 78, y: 10, size: "1rem", delay: 3.8 },
 ];
 
 // Mystery jar items to reveal
@@ -72,8 +48,6 @@ const MYSTERY_ITEMS = [
 ];
 
 function HeroSection() {
-  const letters = "SERENA".split("");
-
   return (
     <section
       className="relative min-h-screen flex items-center overflow-hidden pt-20"
@@ -82,9 +56,9 @@ function HeroSection() {
           "radial-gradient(ellipse at 30% 50%, rgba(198,161,91,0.14) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(139,30,45,0.09) 0%, transparent 50%), var(--serena-pearl)",
       }}
     >
-      {/* Background floating emojis — large and prominent */}
+      {/* Ambient hero decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        {BG_EMOJIS.map((p, i) => (
+        {HERO_DECOR.map((p, i) => (
           <span
             key={i}
             className="absolute select-none"
@@ -92,9 +66,9 @@ function HeroSection() {
               left: `${p.x}%`,
               top: `${p.y}%`,
               fontSize: p.size,
-              animation: `floatAround ${7 + p.delay}s ease-in-out ${p.delay}s infinite`,
-              opacity: 0.45,
-              filter: "drop-shadow(0 2px 6px rgba(198,161,91,0.3))",
+              animation: `floatAround ${12 + i * 0.8}s ease-in-out ${p.delay}s infinite`,
+              opacity: 0.28,
+              filter: "drop-shadow(0 2px 8px rgba(198,161,91,0.18))",
             }}
           >
             {p.emoji}
@@ -111,8 +85,6 @@ function HeroSection() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[calc(100vh-80px)] py-12">
-
-          {/* Left — Text */}
           <div className="flex flex-col items-start gap-6 order-2 lg:order-1">
             <div
               className="text-xs font-semibold uppercase tracking-[0.3em] px-5 py-2 rounded-full heartbeat"
@@ -121,36 +93,20 @@ function HeroSection() {
               ✦ Mystery Jewellery Jars
             </div>
 
-            <div className="overflow-hidden" aria-label="SERENA">
-              <div className="flex gap-0">
-                {letters.map((letter, i) => (
-                  <span
-                    key={i}
-                    className="font-serif text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-black"
-                    style={{
-                      color: "var(--serena-deep-burgundy)",
-                      animation: `letterReveal 0.7s ${i * 0.1}s ease forwards`,
-                      opacity: 0,
-                      display: "inline-block",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    {letter}
-                  </span>
-                ))}
-              </div>
+            <div className="w-full max-w-[620px]">
+              <Logo size="xl" className="drop-shadow-[0_16px_36px_rgba(82,17,28,0.08)]" />
             </div>
 
             <p
               className="font-serif italic text-xl sm:text-2xl"
-              style={{ color: "var(--serena-muted)", animation: "fadeInUp 0.8s 0.8s ease forwards", opacity: 0 }}
+              style={{ color: "var(--serena-muted)" }}
             >
               Every unboxing is a mystery. Every jar, your story.
             </p>
 
             <p
               className="text-base leading-relaxed max-w-lg"
-              style={{ color: "var(--serena-muted)", animation: "fadeInUp 0.8s 1s ease forwards", opacity: 0 }}
+              style={{ color: "var(--serena-muted)" }}
             >
               Receive <strong style={{ color: "var(--serena-ink)" }}>5–10 curated pieces</strong> styled around your aesthetic —
               you won&apos;t know exactly what&apos;s inside until you open it. That&apos;s the magic.
@@ -158,7 +114,6 @@ function HeroSection() {
 
             <div
               className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto"
-              style={{ animation: "fadeInUp 0.8s 1.2s ease forwards", opacity: 0 }}
             >
               <a
                 href={createWhatsAppLink(generalMessage())}
@@ -180,7 +135,6 @@ function HeroSection() {
 
             <div
               className="flex items-center gap-6 pt-2 flex-wrap"
-              style={{ animation: "fadeInUp 0.8s 1.4s ease forwards", opacity: 0 }}
             >
               {["5–10 mystery pieces", "Curated for your vibe", "WA & Instagram ordering"].map((t) => (
                 <div key={t} className="flex items-center gap-1.5">
@@ -191,13 +145,11 @@ function HeroSection() {
             </div>
           </div>
 
-          {/* Right — Swirling jar */}
           <div className="flex justify-center items-center order-1 lg:order-2">
             <div
               className="relative"
               style={{ width: "min(520px, 90vw)", height: "min(520px, 90vw)" }}
             >
-              {/* Glow rings behind jar */}
               <div
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full breathe"
                 style={{ width: "280px", height: "280px", background: "radial-gradient(circle, rgba(198,161,91,0.2) 0%, transparent 70%)" }}
@@ -209,28 +161,24 @@ function HeroSection() {
                 aria-hidden="true"
               />
 
-              {/* Swirling jewellery emojis — all spiral into the jar */}
-              {SWIRL_CONFIG.map((item, i) => (
-                <span
-                  key={i}
-                  aria-hidden="true"
-                  className="absolute select-none"
-                  style={{
-                    top: "50%",
-                    left: "50%",
-                    "--orbit-r": `${item.r}px`,
-                    fontSize: item.size,
-                    animation: `emojiSpiral ${item.duration}s ${item.delay}s ease-in infinite`,
-                    pointerEvents: "none",
-                    filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.2))",
-                    zIndex: 5,
-                  } as React.CSSProperties}
-                >
-                  {item.emoji}
-                </span>
-              ))}
+              <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+                {["✨", "💫", "🌙", "🌸"].map((emoji, i) => (
+                  <span
+                    key={emoji}
+                    className="absolute select-none"
+                    style={{
+                      left: `${18 + i * 20}%`,
+                      top: `${18 + (i % 2) * 54}%`,
+                      fontSize: "1.25rem",
+                      opacity: 0.32,
+                      animation: `floatAround ${8 + i * 1.2}s ease-in-out ${i * 0.4}s infinite`,
+                    }}
+                  >
+                    {emoji}
+                  </span>
+                ))}
+              </div>
 
-              {/* Jar */}
               <div
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                 style={{ width: "200px", zIndex: 20 }}
