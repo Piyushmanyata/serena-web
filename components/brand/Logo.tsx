@@ -8,25 +8,25 @@ interface LogoProps {
 
 const sizes = {
   sm: {
-    src: "/serena-logo-mark.png",
+    src: "/serena-logo-official.png",
     width: 247,
     height: 101,
     className: "w-[112px] sm:w-[124px]",
   },
   md: {
-    src: "/serena-logo-mark.png",
+    src: "/serena-logo-official.png",
     width: 247,
     height: 101,
     className: "w-[180px] sm:w-[200px]",
   },
   lg: {
-    src: "/serena-logo-mark.png",
+    src: "/serena-logo-official.png",
     width: 247,
     height: 101,
     className: "w-[240px] sm:w-[280px] md:w-[320px]",
   },
   xl: {
-    src: "/serena-logo-mark.png",
+    src: "/serena-logo-official.png",
     width: 247,
     height: 101,
     className: "w-[280px] sm:w-[360px] md:w-[460px] lg:w-[520px]",
