@@ -6,7 +6,7 @@ import { SERENA_CONTACT, SERENA_CO_OWNER, INSTAGRAM_URL } from "@/lib/constants"
 export function Footer() {
   return (
     <footer
-      className="relative pt-16 pb-24 md:pb-16 mt-auto"
+      className="relative pt-16 pb-12 mt-auto mobile-bottom-bar-padding"
       style={{ background: "var(--serena-ink)", color: "var(--serena-champagne)" }}
     >
       <div className="gold-divider mb-12 mx-8" />

@@ -9,7 +9,7 @@ import { createWhatsAppLink, generalMessage } from "@/lib/whatsapp";
 import { NAV_LINKS, SERENA_CONTACT, INSTAGRAM_URL } from "@/lib/constants";
 
 // Mini filling jar for the cart icon
-function CartJarIcon({ count }: { count: number }) {
+function CartJarIcon({ count, idPrefix = "desktop" }: { count: number; idPrefix?: string }) {
   const fillFraction = Math.min(count / 8, 1);
   const jarBodyHeight = 182;
   const jarBodyTop = 78;
@@ -23,7 +23,7 @@ function CartJarIcon({ count }: { count: number }) {
         style={{ width: "22px", height: "30px" }}
       >
         <defs>
-          <clipPath id="header-jar-clip">
+          <clipPath id={`${idPrefix}-jar-clip`}>
             <path d="M22 78 L18 240 Q18 260 38 260 L162 260 Q182 260 182 240 L178 78 Z" />
           </clipPath>
         </defs>
@@ -47,7 +47,7 @@ function CartJarIcon({ count }: { count: number }) {
             width="162"
             height={jarBodyHeight}
             fill="rgba(139,30,45,0.45)"
-            clipPath="url(#header-jar-clip)"
+            clipPath={`url(#${idPrefix}-jar-clip)`}
             style={{
               transform: `translateY(${fillTranslateY}px)`,
               transition: "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
@@ -55,7 +55,7 @@ function CartJarIcon({ count }: { count: number }) {
           />
         )}
         {/* Glass reflection */}
-        <path d="M36 90 L32 230 L50 230 L54 90 Z" fill="rgba(255,255,255,0.12)" clipPath="url(#header-jar-clip)" />
+        <path d="M36 90 L32 230 L50 230 L54 90 Z" fill="rgba(255,255,255,0.12)" clipPath={`url(#${idPrefix}-jar-clip)`} />
       </svg>
 
       {count > 0 && (
@@ -99,7 +99,7 @@ export function Header() {
           "fixed top-0 left-0 right-0 z-40 transition-all duration-500",
           scrolled
             ? "bg-[rgba(255,250,243,0.94)] backdrop-blur-xl shadow-[0_4px_24px_rgba(198,161,91,0.15)] border-b border-[rgba(198,161,91,0.2)]"
-            : "bg-transparent",
+            : "bg-transparent backdrop-blur-none border-b border-transparent",
         ].join(" ")}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -109,20 +109,29 @@ export function Header() {
 
             {/* Desktop nav */}
             <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={[
-                    "text-sm font-medium tracking-wider uppercase transition-all duration-200 hover:-translate-y-0.5",
-                    pathname === link.href
-                      ? "text-[#8b1e2d]"
-                      : "text-[#7b6a62] hover:text-[#52111c]",
-                  ].join(" ")}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {NAV_LINKS.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={[
+                      "group relative py-2 text-sm font-medium tracking-wider uppercase transition-all duration-300",
+                      isActive
+                        ? "text-[#8b1e2d]"
+                        : "text-[#7b6a62] hover:text-[#52111c]",
+                    ].join(" ")}
+                  >
+                    <span>{link.label}</span>
+                    <span
+                      className={[
+                        "absolute bottom-0 left-0 w-full h-[2px] bg-[#8b1e2d] transition-transform duration-300 origin-left",
+                        isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                      ].join(" ")}
+                    />
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Desktop right icons */}
@@ -162,7 +171,7 @@ export function Header() {
                 className="relative flex items-center justify-center rounded-full transition-all duration-200 hover:scale-110"
                 style={{ width: "36px", height: "36px", background: "var(--serena-champagne)" }}
               >
-                <CartJarIcon count={count} />
+                <CartJarIcon count={count} idPrefix="desktop" />
               </Link>
             </div>
 
@@ -174,18 +183,18 @@ export function Header() {
                 className="relative flex items-center justify-center rounded-full"
                 style={{ width: "36px", height: "36px", background: "var(--serena-champagne)" }}
               >
-                <CartJarIcon count={count} />
+                <CartJarIcon count={count} idPrefix="mobile" />
               </Link>
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-label={menuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={menuOpen}
-                className="w-9 h-9 rounded-full flex flex-col items-center justify-center gap-1.5 transition-all"
+                className="w-9 h-9 rounded-full flex flex-col items-center justify-center gap-[4px] transition-all"
                 style={{ background: "var(--serena-champagne)" }}
               >
-                <span className={`block w-4 h-0.5 transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`} style={{ background: "var(--serena-deep-burgundy)" }} />
+                <span className={`block w-4 h-0.5 transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-[6px]" : ""}`} style={{ background: "var(--serena-deep-burgundy)" }} />
                 <span className={`block w-4 h-0.5 transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} style={{ background: "var(--serena-deep-burgundy)" }} />
-                <span className={`block w-4 h-0.5 transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} style={{ background: "var(--serena-deep-burgundy)" }} />
+                <span className={`block w-4 h-0.5 transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-[6px]" : ""}`} style={{ background: "var(--serena-deep-burgundy)" }} />
               </button>
             </div>
           </div>

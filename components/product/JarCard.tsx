@@ -16,6 +16,7 @@ interface JarCardProps {
 
 export function JarCard({ product, featured = false }: JarCardProps) {
   const [added, setAdded] = useState(false);
+  const [showPlusOne, setShowPlusOne] = useState(false);
   const [hovered, setHovered] = useState(false);
   const { addToCart } = useCart();
   const isLowStock = product.stock > 0 && product.stock <= product.lowStockThreshold;
@@ -26,7 +27,11 @@ export function JarCard({ product, featured = false }: JarCardProps) {
     e.preventDefault();
     addToCart(product);
     setAdded(true);
-    setTimeout(() => setAdded(false), 2200);
+    setShowPlusOne(true);
+    setTimeout(() => {
+      setAdded(false);
+      setShowPlusOne(false);
+    }, 2200);
   }
 
   return (
@@ -166,11 +171,26 @@ export function JarCard({ product, featured = false }: JarCardProps) {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 mt-1">
+        <div className="flex gap-1.5 sm:gap-2 mt-1 relative">
+          {showPlusOne && (
+            <span
+              className="absolute z-20 pointer-events-none font-semibold text-xs px-2.5 py-1 rounded-full text-white"
+              style={{
+                background: "var(--serena-gold)",
+                boxShadow: "0 4px 12px rgba(198, 161, 91, 0.4)",
+                left: "50%",
+                bottom: "48px",
+                transform: "translateX(-50%)",
+                animation: "floatUpFade 1.2s ease-out forwards",
+              }}
+            >
+              Saved! 💍
+            </span>
+          )}
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="flex-1 text-xs py-2.5 rounded-full font-medium transition-all duration-300 btn-shimmer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 text-[11px] sm:text-xs py-2 sm:py-2.5 rounded-full font-medium transition-all duration-300 btn-shimmer disabled:opacity-50 disabled:cursor-not-allowed truncate"
             style={{
               background: added ? "var(--serena-gold)" : "var(--serena-deep-burgundy)",
               color: "var(--serena-cream)",
@@ -185,7 +205,7 @@ export function JarCard({ product, featured = false }: JarCardProps) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Order ${product.name} via WhatsApp`}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white flex-shrink-0 transition-all hover:scale-115 active:scale-95"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white flex-shrink-0 transition-all hover:scale-[1.15] active:scale-95"
             style={{ background: "#25D366" }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="white" aria-hidden="true">

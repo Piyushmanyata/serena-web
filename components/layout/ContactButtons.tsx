@@ -6,14 +6,17 @@ import { SERENA_CONTACT } from "@/lib/constants";
 export function ContactButtons() {
   return (
     <>
-      {/* Desktop: stacked bottom-right */}
-      <div className="fixed bottom-6 right-6 z-50 hidden md:flex flex-col gap-3">
+      {/* Desktop: stacked bottom-right, offset to avoid BackToTop overlap */}
+      <div 
+        className="fixed bottom-[84px] right-6 z-40 hidden md:flex flex-col gap-3 slide-in-bottom"
+        style={{ animationDelay: "0.5s" }}
+      >
         <a
           href={createWhatsAppLink(generalMessage())}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Contact SERENA on WhatsApp"
-          className="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-110 hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
+          className="w-13 h-13 rounded-full flex items-center justify-center text-2xl shadow-[0_6px_24px_rgba(37,211,102,0.3)] transition-all duration-300 hover:scale-[1.12] hover:shadow-[0_8px_32px_rgba(37,211,102,0.45)] whatsapp-pulse"
           style={{ background: "#25D366" }}
         >
           <WhatsAppIcon />
@@ -21,22 +24,26 @@ export function ContactButtons() {
         <a
           href={`tel:${SERENA_CONTACT.phoneIntl}`}
           aria-label="Call SERENA owner Manyata Sodhani"
-          className="w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-110 hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
+          className="w-13 h-13 rounded-full flex items-center justify-center text-xl shadow-[0_6px_24px_rgba(82,17,28,0.25)] transition-all duration-300 hover:scale-[1.12] hover:shadow-[0_8px_32px_rgba(82,17,28,0.4)]"
           style={{ background: "var(--serena-burgundy)" }}
         >
           <PhoneIcon />
         </a>
       </div>
 
-      {/* Mobile: sticky pill bar */}
+      {/* Mobile: floating glassmorphic pill bar */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 flex md:hidden"
-        style={{ background: "var(--serena-ink)" }}
+        className="fixed bottom-4 left-4 right-4 z-40 flex md:hidden rounded-full overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-[rgba(198,161,91,0.25)] slide-in-bottom"
+        style={{ 
+          background: "rgba(29, 21, 18, 0.88)", 
+          backdropFilter: "blur(12px)", 
+          WebkitBackdropFilter: "blur(12px)" 
+        }}
       >
         <a
           href={`tel:${SERENA_CONTACT.phoneIntl}`}
           aria-label="Call SERENA"
-          className="flex-1 flex items-center justify-center gap-2 py-4 text-sm font-medium text-white border-r border-white/10 transition-colors hover:bg-white/10"
+          className="flex-1 flex items-center justify-center gap-2 py-3.5 text-xs font-semibold uppercase tracking-wider text-white border-r border-white/10 transition-colors hover:bg-white/10"
         >
           <PhoneIcon />
           <span>Call Manyata</span>
@@ -46,8 +53,8 @@ export function ContactButtons() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="WhatsApp SERENA"
-          className="flex-1 flex items-center justify-center gap-2 py-4 text-sm font-medium"
-          style={{ background: "#25D366", color: "white" }}
+          className="flex-1 flex items-center justify-center gap-2 py-3.5 text-xs font-semibold uppercase tracking-wider text-white transition-all whatsapp-pulse"
+          style={{ background: "rgba(37, 211, 102, 0.9)" }}
         >
           <WhatsAppIcon />
           <span>WhatsApp</span>

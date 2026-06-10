@@ -8,19 +8,31 @@ const CART_STORAGE_EVENT = "serena:cart-updated";
 const cartListeners = new Set<() => void>();
 const noopSubscribe = () => () => {};
 
+let cachedCart: CartItem[] | null = null;
+let lastRawCart: string | null = null;
+
 function readCart(): CartItem[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(CART_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (raw === lastRawCart && cachedCart !== null) {
+      return cachedCart;
+    }
+    lastRawCart = raw;
+    cachedCart = raw ? JSON.parse(raw) : [];
+    return cachedCart!;
   } catch {
-    return [];
+    cachedCart = [];
+    return cachedCart;
   }
 }
 
 function writeCart(items: CartItem[]) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(CART_KEY, JSON.stringify(items));
+  const raw = JSON.stringify(items);
+  localStorage.setItem(CART_KEY, raw);
+  lastRawCart = raw;
+  cachedCart = items;
 }
 
 function emitCartChange() {

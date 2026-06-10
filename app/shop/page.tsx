@@ -10,10 +10,10 @@ import type { Product } from "@/types";
 const SHOP_VIBES = VIBES.filter((vibe) => vibe !== "Surprise Me");
 const METALS = ["Gold", "Silver", "Rose Gold", "Gunmetal", "Mixed"];
 const PRICE_RANGES = [
-  { label: "Under ₹399", min: 0, max: 399 },
-  { label: "₹399–₹599", min: 399, max: 599 },
-  { label: "₹599–₹999", min: 599, max: 999 },
-  { label: "₹999+", min: 999, max: Infinity },
+  { label: "₹399 & Under", min: 0, max: 399 },
+  { label: "₹400–₹599", min: 400, max: 599 },
+  { label: "₹600–₹999", min: 600, max: 999 },
+  { label: "₹1000+", min: 1000, max: Infinity },
 ];
 const SORT_OPTIONS = [
   { label: "Featured", value: "featured" },
@@ -63,7 +63,7 @@ function filterProducts(
 
   if (selectedPrice !== null) {
     const range = PRICE_RANGES[selectedPrice];
-    if (range) result = result.filter((p) => p.price >= range.min && p.price < range.max);
+    if (range) result = result.filter((p) => p.price >= range.min && p.price <= range.max);
   }
 
   switch (sort) {
@@ -178,13 +178,129 @@ export default function ShopPage() {
           </button>
         </div>
 
+        {/* Mobile Filter Drawer Overlay */}
+        {filtersOpen && (
+          <div className="fixed inset-0 z-50 flex sm:hidden" role="dialog" aria-modal="true">
+            {/* Backdrop */}
+            <div 
+              className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity" 
+              onClick={() => setFiltersOpen(false)}
+            />
+            
+            {/* Drawer Content */}
+            <div className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-[var(--serena-pearl)] py-6 px-6 shadow-2xl transition-transform duration-300 ease-out border-l border-[rgba(198,161,91,0.2)]">
+              <div className="flex items-center justify-between pb-4 border-b border-[rgba(198,161,91,0.15)] mb-6">
+                <h2 className="font-serif text-lg font-bold text-[var(--serena-deep-burgundy)]">Filters</h2>
+                <button
+                  onClick={() => setFiltersOpen(false)}
+                  className="p-1 rounded-full hover:bg-[var(--serena-champagne)] transition-colors"
+                >
+                  <svg className="w-6 h-6 text-[var(--serena-ink)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                {hasFilters && (
+                  <button 
+                    onClick={clearAll} 
+                    className="text-xs text-left underline transition-colors hover:text-[#8b1e2d]" 
+                    style={{ color: "var(--serena-muted)" }}
+                  >
+                    Clear all active filters
+                  </button>
+                )}
+
+                {/* Vibe */}
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: "var(--serena-gold)" }}>Vibe</h3>
+                  <div className="flex flex-col gap-2">
+                    {SHOP_VIBES.map((v) => (
+                      <label key={v} className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={selectedVibes.includes(v)}
+                          onChange={() => toggle(selectedVibes, v, setSelectedVibes)}
+                          className="w-4 h-4 rounded border accent-[#8b1e2d] cursor-pointer"
+                        />
+                        <span className="text-sm group-hover:text-[#52111c] transition-colors" style={{ color: "var(--serena-muted)" }}>{v}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Jewellery Type */}
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: "var(--serena-gold)" }}>Jewellery Type</h3>
+                  <div className="flex flex-col gap-2">
+                    {JEWELLERY_TYPES.map((t) => (
+                      <label key={t} className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={selectedTypes.includes(t)}
+                          onChange={() => toggle(selectedTypes, t, setSelectedTypes)}
+                          className="w-4 h-4 rounded border accent-[#8b1e2d] cursor-pointer"
+                        />
+                        <span className="text-sm group-hover:text-[#52111c] transition-colors" style={{ color: "var(--serena-muted)" }}>{t}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Budget */}
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: "var(--serena-gold)" }}>Budget</h3>
+                  <div className="flex flex-col gap-2">
+                    {PRICE_RANGES.map((r, i) => (
+                      <label key={r.label} className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                          type="radio"
+                          name="price-mobile"
+                          checked={selectedPrice === i}
+                          onChange={() => setSelectedPrice(selectedPrice === i ? null : i)}
+                          className="w-4 h-4 accent-[#8b1e2d] cursor-pointer"
+                        />
+                        <span className="text-sm group-hover:text-[#52111c] transition-colors" style={{ color: "var(--serena-muted)" }}>{r.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Metal */}
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: "var(--serena-gold)" }}>Metal Tone</h3>
+                  <div className="flex flex-col gap-2">
+                    {METALS.map((m) => (
+                      <label key={m} className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={selectedMetals.includes(m)}
+                          onChange={() => toggle(selectedMetals, m, setSelectedMetals)}
+                          className="w-4 h-4 rounded border accent-[#8b1e2d] cursor-pointer"
+                        />
+                        <span className="text-sm group-hover:text-[#52111c] transition-colors" style={{ color: "var(--serena-muted)" }}>{m}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setFiltersOpen(false)}
+                className="mt-8 w-full py-3 rounded-full text-white font-medium text-sm transition-all bg-[var(--serena-deep-burgundy)] hover:opacity-90 active:scale-95"
+              >
+                Apply Filters ({filtered.length} Jars)
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="flex gap-8">
-          {/* Sidebar filters — desktop always visible, mobile collapsible */}
-          <aside
-            className={`w-60 flex-shrink-0 flex-col gap-6 ${filtersOpen ? "flex" : "hidden"} sm:flex`}
-          >
+          {/* Sidebar filters — desktop always visible, mobile has slide-out drawer instead */}
+          <aside className="w-60 flex-shrink-0 hidden sm:flex flex-col gap-6">
             {hasFilters && (
-              <button onClick={clearAll} className="text-xs underline transition-colors hover:text-[#8b1e2d]" style={{ color: "var(--serena-muted)" }}>
+              <button onClick={clearAll} className="text-xs text-left underline transition-colors hover:text-[#8b1e2d]" style={{ color: "var(--serena-muted)" }}>
                 Clear all filters
               </button>
             )}

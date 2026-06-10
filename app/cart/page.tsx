@@ -6,6 +6,7 @@ import { createWhatsAppLink, cartOrderMessage } from "@/lib/whatsapp";
 import { DELIVERY_WINDOW, SHIPPING_FEE, FREE_SHIPPING_THRESHOLD, PAYMENT_NOTE } from "@/lib/constants";
 import { getProductBySlug } from "@/lib/products";
 import type { CartItem } from "@/types";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 // ── Animated filling jar visual ──────────────────────────────
 function FillingJarDisplay({ count, items }: { count: number; items: CartItem[] }) {
@@ -153,19 +154,23 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center" style={{ background: "var(--serena-pearl)" }}>
-        <div className="text-center px-4">
-          <div className="text-7xl mb-6 jar-float inline-block">🫙</div>
-          <h1 className="font-serif text-3xl font-bold mb-3" style={{ color: "var(--serena-deep-burgundy)" }}>Your saved order is empty</h1>
-          <p className="text-base mb-8" style={{ color: "var(--serena-muted)" }}>Discover mystery jewellery jars made for your mood.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/shop" className="btn-shimmer inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold" style={{ background: "var(--serena-deep-burgundy)", color: "var(--serena-cream)", border: "1px solid var(--serena-gold)" }}>
+        <ScrollReveal variant="scale-up" className="max-w-md w-full px-4 text-center flex flex-col items-center justify-center">
+          <div className="mb-6 flex justify-center">
+            <FillingJarDisplay count={0} items={[]} />
+          </div>
+          <h1 className="font-serif text-3xl font-bold mb-3" style={{ color: "var(--serena-deep-burgundy)" }}>Your jar is empty</h1>
+          <p className="text-sm md:text-base mb-8 max-w-sm mx-auto" style={{ color: "var(--serena-muted)" }}>
+            Let&apos;s start styling! Choose one of our curated mystery collections or customize a jar entirely to your aesthetic.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center w-full">
+            <Link href="/shop" className="btn-shimmer inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold w-full sm:w-auto" style={{ background: "var(--serena-deep-burgundy)", color: "var(--serena-cream)", border: "1px solid var(--serena-gold)" }}>
               Shop Jars
             </Link>
-            <Link href="/customize" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold border hover-lift" style={{ borderColor: "var(--serena-gold)", color: "var(--serena-deep-burgundy)" }}>
-              ✦ Build Custom Jar
+            <Link href="/customize" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold border hover-lift w-full sm:w-auto" style={{ borderColor: "var(--serena-gold)", color: "var(--serena-deep-burgundy)" }}>
+              ✦ Customize Jar
             </Link>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     );
   }
@@ -302,22 +307,42 @@ export default function CartPage() {
 
               <h2 className="font-serif text-xl font-bold mb-5" style={{ color: "var(--serena-deep-burgundy)" }}>Order Summary</h2>
 
-              <div className="flex flex-col gap-3 mb-6">
+              <div className="flex flex-col gap-4 mb-6">
                 <div className="flex justify-between text-sm">
                   <span style={{ color: "var(--serena-muted)" }}>Subtotal</span>
                   <span style={{ color: "var(--serena-ink)" }}>₹{subtotal}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span style={{ color: "var(--serena-muted)" }}>Shipping</span>
-                  <span style={{ color: shipping === 0 ? "#22c55e" : "var(--serena-ink)" }}>
+                  <span className="font-semibold" style={{ color: shipping === 0 ? "#16a34a" : "var(--serena-ink)" }}>
                     {shipping === 0 ? (subtotal > 0 ? "Free 🎉" : "—") : `₹${shipping}`}
                   </span>
                 </div>
-                {shipping > 0 && (
-                  <p className="text-xs" style={{ color: "var(--serena-muted)" }}>
-                    Add ₹{FREE_SHIPPING_THRESHOLD - subtotal} more for free shipping
-                  </p>
+                
+                {shipping > 0 ? (
+                  <div className="mt-1">
+                    <p className="text-xs mb-1.5 flex justify-between" style={{ color: "var(--serena-muted)" }}>
+                      <span>Free shipping progress</span>
+                      <span className="font-semibold" style={{ color: "var(--serena-gold)" }}>₹{subtotal} / ₹{FREE_SHIPPING_THRESHOLD}</span>
+                    </p>
+                    <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: "rgba(198,161,91,0.15)" }}>
+                      <div
+                        className="h-full rounded-full bg-[var(--serena-gold)] transition-all duration-500"
+                        style={{ width: `${Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)}%` }}
+                      />
+                    </div>
+                    <p className="text-[11px] mt-1.5 italic" style={{ color: "var(--serena-muted)" }}>
+                      Add ₹{FREE_SHIPPING_THRESHOLD - subtotal} more for free shipping
+                    </p>
+                  </div>
+                ) : (
+                  subtotal > 0 && (
+                    <p className="text-xs font-semibold text-green-600 flex items-center gap-1">
+                      🎉 You qualified for Free Shipping!
+                    </p>
+                  )
                 )}
+
                 <div className="gold-divider" />
                 <div className="flex justify-between font-bold">
                   <span style={{ color: "var(--serena-ink)" }}>Total</span>
