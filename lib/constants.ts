@@ -1,0 +1,131 @@
+import type { JewelleryType, MetalTone, Vibe } from "@/types";
+
+export const SERENA_CONTACT = {
+  ownerName: "Manyata Sodhani",
+  phone: "9875393417",
+  phoneIntl: "+919875393417",
+  whatsapp: "919875393417",
+  instagram: "@serena.jars",
+};
+
+export const WHATSAPP_BASE = "https://wa.me/919875393417";
+
+export const JEWELLERY_TYPES: JewelleryType[] = [
+  "Necklace / Pendant",
+  "Waist Chain",
+  "Rings",
+  "Earrings",
+  "Armlet",
+  "Stack Bracelets",
+  "Watches",
+  "Anklets",
+];
+
+export const METAL_TONES: MetalTone[] = [
+  "Gold",
+  "Silver",
+  "Rose Gold",
+  "Gunmetal",
+  "Mixed",
+  "Surprise Me",
+];
+
+export const VIBES: Vibe[] = [
+  "Coquette / Romance",
+  "Grunge / Fairy Core",
+  "Clean Girl / Minimalist",
+  "Streetwear / Chunky",
+  "That '90s Vibe",
+  "Midnight / Gothic",
+  "Sun & Stars",
+  "Ocean Breeze",
+  "Surprise Me",
+];
+
+export const VIBE_CONFIG: Record<
+  string,
+  { emoji: string; colors: string[]; desc: string; palette: string }
+> = {
+  "Coquette / Romance": {
+    emoji: "🌸",
+    colors: ["#f7c5cc", "#f9e0e5", "#e8c97a", "#fffaf3"],
+    desc: "Soft, romantic, feminine",
+    palette: "Pearl · Blush · Rose Gold",
+  },
+  "Grunge / Fairy Core": {
+    emoji: "🍄",
+    colors: ["#6b5e4e", "#8a7a6a", "#4a4040", "#c9b99a"],
+    desc: "Moody, whimsical, earthy",
+    palette: "Smoke · Forest · Antique Silver",
+  },
+  "Clean Girl / Minimalist": {
+    emoji: "✨",
+    colors: ["#e8c97a", "#ead8b7", "#fffaf3", "#d4c49a"],
+    desc: "Polished everyday luxury",
+    palette: "Champagne · Gold · Ivory",
+  },
+  "Streetwear / Chunky": {
+    emoji: "⛓️",
+    colors: ["#2a2a2a", "#5a5a5a", "#c0c0c0", "#cc2200"],
+    desc: "Bold, edgy, statement",
+    palette: "Silver · Black · Chrome",
+  },
+  "That '90s Vibe": {
+    emoji: "🌼",
+    colors: ["#ff90b3", "#ffde59", "#7ecfcd", "#b7f0ad"],
+    desc: "Playful, nostalgic, colourful",
+    palette: "Candy Pink · Daisy Yellow · Aqua",
+  },
+  "Midnight / Gothic": {
+    emoji: "🖤",
+    colors: ["#1a1a2e", "#16213e", "#0f3460", "#800020"],
+    desc: "Dark, dramatic, mysterious",
+    palette: "Black · Gunmetal · Deep Red",
+  },
+  "Sun & Stars": {
+    emoji: "🌙",
+    colors: ["#1e1b4b", "#312e81", "#c6a15b", "#e8c97a"],
+    desc: "Dreamy, cosmic, magical",
+    palette: "Gold · Midnight Blue · Pearl",
+  },
+  "Ocean Breeze": {
+    emoji: "🌊",
+    colors: ["#0e7490", "#06b6d4", "#a7f3d0", "#f0fdf4"],
+    desc: "Beachy, fresh, vacation-ready",
+    palette: "Turquoise · Sand · Sea Green",
+  },
+  "Surprise Me": {
+    emoji: "🎁",
+    colors: ["#8b1e2d", "#c6a15b", "#f8efe2", "#ead8b7"],
+    desc: "A delightful mystery curation",
+    palette: "Mixed & Magical",
+  },
+};
+
+export const COLOUR_MOODS = [
+  "Soft Pink",
+  "Pearl White",
+  "Gold",
+  "Black",
+  "Ocean Blue",
+  "Earthy Green",
+  "Red Accent",
+  "Pastel Mix",
+  "Custom",
+];
+
+export const BUDGET_OPTIONS = [399, 599, 799, 999];
+
+export const SHIPPING_FEE = 60;
+export const FREE_SHIPPING_THRESHOLD = 599;
+
+export const NAV_LINKS = [
+  { label: "Shop", href: "/shop" },
+  { label: "Customize", href: "/customize" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
+export function createWhatsAppLink(message: string): string {
+  return `${WHATSAPP_BASE}?text=${encodeURIComponent(message)}`;
+}

@@ -1,26 +1,242 @@
 @import "tailwindcss";
 
+/* ─── SERENA DESIGN TOKENS ──────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --serena-cream: #f8efe2;
+  --serena-soft-cream: #fff8ef;
+  --serena-burgundy: #8b1e2d;
+  --serena-deep-burgundy: #52111c;
+  --serena-gold: #c6a15b;
+  --serena-gold-light: #e8c97a;
+  --serena-champagne: #ead8b7;
+  --serena-pearl: #fffaf3;
+  --serena-rose: #d9a0a8;
+  --serena-ink: #1d1512;
+  --serena-muted: #7b6a62;
+  --serena-glass: rgba(255, 255, 255, 0.38);
+  --serena-glass-border: rgba(198, 161, 91, 0.35);
+
+  --background: var(--serena-pearl);
+  --foreground: var(--serena-ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── BASE ──────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--serena-pearl);
+  color: var(--serena-ink);
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── TYPOGRAPHY ────────────────────────────────────────────── */
+.font-serif { font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif; }
+.font-display { font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif; }
+
+/* ─── ANIMATIONS ────────────────────────────────────────────── */
+@keyframes floatSlow {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -14px, 0) rotate(1.5deg); }
+}
+
+@keyframes floatMedium {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -8px, 0); }
+}
+
+@keyframes goldShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(198, 161, 91, 0); }
+  50% { box-shadow: 0 0 20px 4px rgba(198, 161, 91, 0.4); }
+}
+
+@keyframes orbiting {
+  from { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+}
+
+@keyframes particleDrift {
+  0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 0.6; }
+  100% { transform: translateY(-120px) translateX(30px) scale(0.3); opacity: 0; }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+@keyframes shimmerSweep {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+@keyframes jarFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(0.5deg); }
+  66% { transform: translateY(-5px) rotate(-0.5deg); }
+}
+
+@keyframes corkBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes letterReveal {
+  from { opacity: 0; transform: translateY(40px) rotateX(40deg); }
+  to { opacity: 1; transform: translateY(0) rotateX(0deg); }
+}
+
+@keyframes goldRimGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(198,161,91,0.3), inset 0 0 8px rgba(198,161,91,0.1); }
+  50% { box-shadow: 0 0 24px rgba(198,161,91,0.7), inset 0 0 16px rgba(198,161,91,0.2); }
+}
+
+@keyframes rotateSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ─── UTILITY CLASSES ───────────────────────────────────────── */
+.float-slow { animation: floatSlow 7s ease-in-out infinite; }
+.float-medium { animation: floatMedium 5s ease-in-out infinite; }
+.breathe { animation: breathe 4s ease-in-out infinite; }
+.sparkle { animation: sparkle 2s ease-in-out infinite; }
+.jar-float { animation: jarFloat 8s ease-in-out infinite; }
+.cork-bob { animation: corkBob 4s ease-in-out infinite; }
+.gold-rim-glow { animation: goldRimGlow 3s ease-in-out infinite; }
+.rotate-slow { animation: rotateSlow 20s linear infinite; }
+
+.fade-in-up { animation: fadeInUp 0.7s ease forwards; }
+.letter-reveal { animation: letterReveal 0.6s ease forwards; }
+
+/* ─── GLASS CARD ────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(255, 250, 243, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--serena-glass-border);
+  border-radius: 20px;
+}
+
+.glass-dark {
+  background: rgba(29, 21, 18, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(198, 161, 91, 0.2);
+}
+
+/* ─── GOLD SHIMMER BUTTON ───────────────────────────────────── */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transform: skewX(-20deg);
+}
+.btn-shimmer:hover::after {
+  animation: shimmerSweep 0.6s ease;
+}
+
+/* ─── GOLD TEXT ─────────────────────────────────────────────── */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #c6a15b 0%, #e8c97a 40%, #c6a15b 70%, #a07840 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: goldShimmer 5s linear infinite;
+}
+
+/* ─── JAR CARD HOVER ────────────────────────────────────────── */
+.jar-card:hover .jar-thumb {
+  transform: translateY(-12px);
+  filter: drop-shadow(0 20px 30px rgba(198,161,91,0.3));
+}
+
+.jar-card:hover .card-glow {
+  opacity: 1;
+}
+
+/* ─── SECTION DIVIDER ───────────────────────────────────────── */
+.gold-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--serena-gold), transparent);
+}
+
+/* ─── MAGNETIC BUTTON ───────────────────────────────────────── */
+.magnetic-wrap {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ─── SCROLL BAR ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--serena-pearl); }
+::-webkit-scrollbar-thumb { background: var(--serena-champagne); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--serena-gold); }
+
+/* ─── SELECTION ─────────────────────────────────────────────── */
+::selection {
+  background-color: var(--serena-champagne);
+  color: var(--serena-deep-burgundy);
+}
+
+/* ─── REDUCED MOTION ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── FOCUS RINGS ───────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--serena-gold);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
