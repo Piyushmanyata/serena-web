@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState } from "react";
 import type { Product } from "@/types";
 import { JarSVG } from "@/components/brand/Logo";
-import { Button } from "@/components/ui/Button";
 import { createWhatsAppLink, productOrderMessage } from "@/lib/whatsapp";
 import { useCart } from "@/lib/cart";
 
@@ -15,6 +14,7 @@ interface JarCardProps {
 
 export function JarCard({ product, featured = false }: JarCardProps) {
   const [added, setAdded] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const { addToCart } = useCart();
   const isLowStock = product.stock > 0 && product.stock <= product.lowStockThreshold;
   const isOutOfStock = product.stock === 0;
@@ -23,16 +23,43 @@ export function JarCard({ product, featured = false }: JarCardProps) {
     e.preventDefault();
     addToCart(product);
     setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+    setTimeout(() => setAdded(false), 2200);
   }
 
   return (
     <article
-      className={`jar-card group relative flex flex-col rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer ${featured ? "shadow-[0_8px_40px_rgba(198,161,91,0.15)]" : "shadow-[0_4px_20px_rgba(0,0,0,0.08)]"}`}
+      className={`jar-card group relative flex flex-col rounded-2xl overflow-hidden ${featured ? "shadow-[0_8px_40px_rgba(198,161,91,0.18)]" : "shadow-[0_4px_20px_rgba(0,0,0,0.08)]"}`}
       style={{ background: "rgba(255,250,243,0.8)", border: "1px solid rgba(198,161,91,0.2)" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      {/* Gold card glow overlay on hover */}
-      <div className="card-glow absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 pointer-events-none" style={{ background: `radial-gradient(ellipse at 50% 20%, ${product.accentColor}22 0%, transparent 70%)` }} aria-hidden="true" />
+      {/* Card glow overlay */}
+      <div
+        className="card-glow absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 pointer-events-none"
+        style={{ background: `radial-gradient(ellipse at 50% 20%, ${product.accentColor}28 0%, transparent 70%)` }}
+        aria-hidden="true"
+      />
+
+      {/* Sparkle dots (appear on hover) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        {hovered && [
+          { top: "10%", left: "15%", delay: "0s" },
+          { top: "20%", right: "12%", delay: "0.3s" },
+          { top: "8%", right: "30%", delay: "0.6s" },
+        ].map((pos, i) => (
+          <span
+            key={i}
+            className="absolute text-xs"
+            style={{
+              ...pos,
+              color: "var(--serena-gold)",
+              animation: `twinkleStar 1.2s ${pos.delay} ease-in-out infinite`,
+            }}
+          >
+            ✦
+          </span>
+        ))}
+      </div>
 
       {/* Badges */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
@@ -51,7 +78,7 @@ export function JarCard({ product, featured = false }: JarCardProps) {
             Sold Out
           </span>
         )}
-        {product.compareAtPrice && (
+        {product.compareAtPrice && !isOutOfStock && (
           <span className="text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full" style={{ background: "var(--serena-gold)", color: "#1d1512" }}>
             Sale
           </span>
@@ -60,7 +87,7 @@ export function JarCard({ product, featured = false }: JarCardProps) {
 
       {/* Jar visual */}
       <Link href={`/shop/${product.slug}`} className="block relative pt-6 pb-2 px-8">
-        <div className="jar-thumb w-full max-w-[160px] mx-auto transition-all duration-500">
+        <div className="jar-thumb w-full max-w-[160px] mx-auto">
           <JarSVG
             accentColor={product.accentColor}
             label={product.emoji}
@@ -71,16 +98,21 @@ export function JarCard({ product, featured = false }: JarCardProps) {
 
       {/* Content */}
       <div className="flex-1 flex flex-col p-5 gap-3">
-        {/* Piece count badge */}
+        {/* Piece count */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: "var(--serena-champagne)", color: "var(--serena-deep-burgundy)" }}>
-            {product.pieceCountMin}–{product.pieceCountMax} pieces
+          <span
+            className="text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full"
+            style={{ background: "var(--serena-champagne)", color: "var(--serena-deep-burgundy)" }}
+          >
+            {product.pieceCountMin}–{product.pieceCountMax} mystery pieces
           </span>
-          <span className="text-xs" style={{ color: "var(--serena-muted)" }}>inside</span>
         </div>
 
         <Link href={`/shop/${product.slug}`} className="group/title">
-          <h3 className="font-serif font-semibold text-lg leading-tight group-hover/title:text-[#8b1e2d] transition-colors" style={{ color: "var(--serena-ink)" }}>
+          <h3
+            className="font-serif font-semibold text-lg leading-tight group-hover/title:text-[#8b1e2d] transition-colors"
+            style={{ color: "var(--serena-ink)" }}
+          >
             {product.name}
           </h3>
         </Link>
@@ -92,13 +124,17 @@ export function JarCard({ product, featured = false }: JarCardProps) {
         {/* Mood tags */}
         <div className="flex flex-wrap gap-1">
           {product.moodTags.slice(0, 3).map((tag) => (
-            <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full border" style={{ borderColor: "rgba(198,161,91,0.3)", color: "var(--serena-muted)" }}>
+            <span
+              key={tag}
+              className="text-[10px] px-2 py-0.5 rounded-full border transition-colors hover:border-[rgba(198,161,91,0.6)]"
+              style={{ borderColor: "rgba(198,161,91,0.3)", color: "var(--serena-muted)" }}
+            >
               {tag}
             </span>
           ))}
         </div>
 
-        {/* Best for */}
+        {/* Includes */}
         {product.includedTypes.length > 0 && (
           <p className="text-[11px]" style={{ color: "var(--serena-muted)" }}>
             <span style={{ color: "var(--serena-gold)" }}>Includes</span>{" "}
@@ -123,21 +159,22 @@ export function JarCard({ product, featured = false }: JarCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="flex-1 text-xs py-2.5 rounded-full font-medium transition-all duration-200 btn-shimmer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 text-xs py-2.5 rounded-full font-medium transition-all duration-300 btn-shimmer disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: added ? "var(--serena-gold)" : "var(--serena-deep-burgundy)",
               color: "var(--serena-cream)",
               border: "1px solid var(--serena-gold)",
+              animation: added ? "jellyBounce 0.4s ease" : "",
             }}
           >
-            {isOutOfStock ? "Sold Out" : added ? "✓ Added" : "Add to Cart"}
+            {isOutOfStock ? "Sold Out" : added ? "✓ Added to Jar!" : "Add to Jar"}
           </button>
           <a
             href={createWhatsAppLink(productOrderMessage(product.name))}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Order ${product.name} via WhatsApp`}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white flex-shrink-0 transition-all hover:scale-110"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-white flex-shrink-0 transition-all hover:scale-115 active:scale-95"
             style={{ background: "#25D366" }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="white" aria-hidden="true">
@@ -148,13 +185,15 @@ export function JarCard({ product, featured = false }: JarCardProps) {
 
         {/* Customize link */}
         {product.isCustomizable && (
-          <Link
-            href={`/customize?vibe=${encodeURIComponent(product.moodTags[0] ?? "")}`}
+          <a
+            href={createWhatsAppLink(`Hi SERENA! I want to customize the ${product.name} jar. Can you help?`)}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-[11px] text-center transition-colors hover:text-[#8b1e2d]"
             style={{ color: "var(--serena-gold)" }}
           >
-            ✦ Customize this vibe
-          </Link>
+            ✦ Customize this vibe via WhatsApp
+          </a>
         )}
       </div>
     </article>

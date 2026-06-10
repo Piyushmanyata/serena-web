@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { createWhatsAppLink, generalMessage } from "@/lib/whatsapp";
-import { SERENA_CONTACT } from "@/lib/constants";
+import { SERENA_CONTACT, SERENA_CO_OWNER, INSTAGRAM_URL } from "@/lib/constants";
 
 export function Footer() {
   return (
@@ -9,7 +9,6 @@ export function Footer() {
       className="relative pt-16 pb-24 md:pb-16 mt-auto"
       style={{ background: "var(--serena-ink)", color: "var(--serena-champagne)" }}
     >
-      {/* Gold top border */}
       <div className="gold-divider mb-12 mx-8" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,17 +17,18 @@ export function Footer() {
           <div className="flex flex-col gap-4">
             <Logo size="md" className="text-[#f8efe2]" />
             <p className="text-sm leading-relaxed" style={{ color: "rgba(234,216,183,0.7)" }}>
-              Premium jewellery jars curated around your aesthetic, photos, and personal style.
+              Mystery jewellery jars curated around your aesthetic, photos, and personal style.
               Not just jewellery — a small treasure ritual.
             </p>
             <div className="flex flex-col gap-2 mt-2">
               <a
-                href={`tel:${SERENA_CONTACT.phoneIntl}`}
-                aria-label="Call SERENA owner Manyata Sodhani"
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-sm flex items-center gap-2 transition-colors hover:text-[#c6a15b]"
                 style={{ color: "rgba(234,216,183,0.8)" }}
               >
-                📞 {SERENA_CONTACT.phone}
+                📸 {SERENA_CONTACT.instagram}
               </a>
               <a
                 href={createWhatsAppLink(generalMessage())}
@@ -57,7 +57,7 @@ export function Footer() {
                 <Link
                   key={l.href}
                   href={l.href}
-                  className="text-sm transition-colors hover:text-[#c6a15b]"
+                  className="text-sm transition-all hover:text-[#c6a15b] hover:translate-x-1"
                   style={{ color: "rgba(234,216,183,0.75)" }}
                 >
                   {l.label}
@@ -66,46 +66,50 @@ export function Footer() {
             </nav>
           </div>
 
-          {/* CTA column */}
+          {/* Order column */}
           <div className="flex flex-col gap-4">
             <h3 className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: "var(--serena-gold)" }}>
               Order Directly
             </h3>
             <p className="text-sm" style={{ color: "rgba(234,216,183,0.7)" }}>
-              Many customers order directly with Manyata via WhatsApp.
+              All orders are handled personally via WhatsApp or Instagram.
             </p>
             <div className="flex flex-col gap-3">
               <a
                 href={createWhatsAppLink(generalMessage())}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-full text-sm font-medium text-white transition-all hover:scale-105"
+                className="btn-shimmer inline-flex items-center justify-center gap-2 py-3 px-5 rounded-full text-sm font-medium text-white"
                 style={{ background: "#25D366" }}
               >
                 💬 WhatsApp Manyata
               </a>
               <a
-                href={`tel:${SERENA_CONTACT.phoneIntl}`}
-                className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-full text-sm font-medium text-white transition-all hover:scale-105 border border-[rgba(198,161,91,0.3)]"
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-shimmer inline-flex items-center justify-center gap-2 py-3 px-5 rounded-full text-sm font-medium text-white"
+                style={{ background: "linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" }}
+              >
+                📸 Instagram @_serena_.co
+              </a>
+              <a
+                href={`https://wa.me/${SERENA_CO_OWNER.whatsapp}?text=${encodeURIComponent("Hi Hridyanshi! I want to order a SERENA jar.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-shimmer inline-flex items-center justify-center gap-2 py-3 px-5 rounded-full text-sm font-medium text-white border border-[rgba(198,161,91,0.3)]"
                 style={{ background: "var(--serena-burgundy)" }}
               >
-                📞 Call Manyata
+                💬 WhatsApp Hridyanshi
               </a>
-              <Link
-                href="/customize"
-                className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-full text-sm font-medium transition-all hover:scale-105 border border-[rgba(198,161,91,0.4)] text-[#c6a15b]"
-              >
-                ✦ Customize via WhatsApp
-              </Link>
             </div>
           </div>
         </div>
 
-        {/* Bottom strip */}
         <div className="gold-divider mb-6" />
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs" style={{ color: "rgba(234,216,183,0.5)" }}>
-            © {new Date().getFullYear()} SERENA by Manyata Sodhani. All rights reserved.
+            © 2026 SERENA by Manyata Sodhani &amp; Hridyanshi Agrawal. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             {[
@@ -121,9 +125,15 @@ export function Footer() {
                 {l.label}
               </Link>
             ))}
-            <span className="text-xs" style={{ color: "rgba(234,216,183,0.5)" }}>
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs transition-colors hover:text-[#c6a15b]"
+              style={{ color: "rgba(234,216,183,0.5)" }}
+            >
               {SERENA_CONTACT.instagram}
-            </span>
+            </a>
           </div>
         </div>
       </div>

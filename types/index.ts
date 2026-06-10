@@ -5,7 +5,6 @@ export type JewelleryType =
   | "Earrings"
   | "Armlet"
   | "Stack Bracelets"
-  | "Watches"
   | "Anklets";
 
 export type MetalTone = "Gold" | "Silver" | "Rose Gold" | "Gunmetal" | "Mixed" | "Surprise Me";

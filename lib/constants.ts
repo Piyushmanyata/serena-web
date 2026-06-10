@@ -5,10 +5,21 @@ export const SERENA_CONTACT = {
   phone: "9875393417",
   phoneIntl: "+919875393417",
   whatsapp: "919875393417",
-  instagram: "@serena.jars",
+  instagram: "@_serena_.co",
+  instagramUrl: "https://www.instagram.com/_serena_.co",
+  instagramDM: "https://ig.me/m/_serena_.co",
+};
+
+export const SERENA_CO_OWNER = {
+  name: "Hridyanshi Agrawal",
+  phone: "9569933040",
+  phoneIntl: "+919569933040",
+  whatsapp: "919569933040",
 };
 
 export const WHATSAPP_BASE = "https://wa.me/919875393417";
+export const INSTAGRAM_URL = "https://www.instagram.com/_serena_.co";
+export const INSTAGRAM_DM = "https://ig.me/m/_serena_.co";
 
 export const JEWELLERY_TYPES: JewelleryType[] = [
   "Necklace / Pendant",
@@ -17,9 +28,11 @@ export const JEWELLERY_TYPES: JewelleryType[] = [
   "Earrings",
   "Armlet",
   "Stack Bracelets",
-  "Watches",
   "Anklets",
 ];
+
+export const MYSTERY_BONUS_NOTE =
+  "If lucky, your jar might also include watches, bag charms, keychains & more surprises!";
 
 export const METAL_TONES: MetalTone[] = [
   "Gold",
