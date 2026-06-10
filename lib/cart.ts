@@ -78,8 +78,10 @@ function useMountedFlag() {
   );
 }
 
+const SERVER_EMPTY_ARRAY: CartItem[] = [];
+
 export function useCart() {
-  const items = useSyncExternalStore(subscribeCart, readCart, () => []);
+  const items = useSyncExternalStore(subscribeCart, readCart, () => SERVER_EMPTY_ARRAY);
   const mounted = useMountedFlag();
 
   const save = useCallback((updater: (current: CartItem[]) => CartItem[]) => {
