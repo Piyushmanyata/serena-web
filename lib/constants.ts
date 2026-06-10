@@ -20,6 +20,7 @@ export const SERENA_CO_OWNER = {
 export const WHATSAPP_BASE = "https://wa.me/919875393417";
 export const INSTAGRAM_URL = "https://www.instagram.com/_serena_.co";
 export const INSTAGRAM_DM = "https://ig.me/m/_serena_.co";
+export const SITE_URL = "https://serena-web.vercel.app";
 
 export const JEWELLERY_TYPES: JewelleryType[] = [
   "Necklace / Pendant",
@@ -131,14 +132,54 @@ export const BUDGET_OPTIONS = [399, 599, 799, 999];
 
 export const SHIPPING_FEE = 60;
 export const FREE_SHIPPING_THRESHOLD = 599;
+export const DELIVERY_WINDOW = "3-6 working days after confirmation";
+export const PAYMENT_NOTE =
+  "No online payment is collected on the website. We confirm availability on WhatsApp or Instagram, then share payment details.";
 
 export const NAV_LINKS = [
   { label: "Shop", href: "/shop" },
   { label: "Customize", href: "/customize" },
+  { label: "Gift", href: "/gift" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
-export function createWhatsAppLink(message: string): string {
-  return `${WHATSAPP_BASE}?text=${encodeURIComponent(message)}`;
-}
+export const FAQS = [
+  {
+    question: "How do I place an order?",
+    answer:
+      "Save jars to your order, then send the pre-filled message on WhatsApp or Instagram. We confirm availability and payment details personally before anything is finalized.",
+  },
+  {
+    question: "When will my SERENA jar arrive?",
+    answer: `Most jars ship within ${DELIVERY_WINDOW}. Custom jars can take a little longer if we are matching reference photos or a specific gifting date.`,
+  },
+  {
+    question: "Do I pay online on the website?",
+    answer: PAYMENT_NOTE,
+  },
+  {
+    question: "How much is shipping?",
+    answer: `Shipping is Rs ${SHIPPING_FEE}. Orders of Rs ${FREE_SHIPPING_THRESHOLD} or more get free shipping.`,
+  },
+  {
+    question: "Can I choose exactly what is inside?",
+    answer:
+      "SERENA is a mystery jar experience, so exact pieces stay a surprise. You can choose vibe, metal tone, colours, jewellery types, and notes so the curation feels personal.",
+  },
+  {
+    question: "Can I send this as a gift?",
+    answer:
+      "Yes. Share the recipient's vibe, occasion, and message. We can curate a gift-ready jar for birthdays, festivals, bridesmaids, best friends, or surprise hampers.",
+  },
+  {
+    question: "Can I return a jar?",
+    answer:
+      "Because every jar is curated and packed as a mystery experience, returns are reviewed case by case. If something arrives damaged, message us immediately with clear photos.",
+  },
+  {
+    question: "Who curates the jars?",
+    answer:
+      "Manyata Sodhani and Hridyanshi Agrawal personally review requests and curate the jars around your aesthetic, preferences, and budget.",
+  },
+];

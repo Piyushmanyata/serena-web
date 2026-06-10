@@ -6,6 +6,8 @@ import type { Product } from "@/types";
 import { JarSVG } from "@/components/brand/Logo";
 import { createWhatsAppLink, productOrderMessage } from "@/lib/whatsapp";
 import { useCart } from "@/lib/cart";
+import { getDropStatus } from "@/lib/commerce";
+import { DELIVERY_WINDOW } from "@/lib/constants";
 
 interface JarCardProps {
   product: Product;
@@ -18,6 +20,7 @@ export function JarCard({ product, featured = false }: JarCardProps) {
   const { addToCart } = useCart();
   const isLowStock = product.stock > 0 && product.stock <= product.lowStockThreshold;
   const isOutOfStock = product.stock === 0;
+  const dropStatus = getDropStatus(product);
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
@@ -66,6 +69,11 @@ export function JarCard({ product, featured = false }: JarCardProps) {
         {product.isLimitedDrop && (
           <span className="text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full text-white" style={{ background: "var(--serena-burgundy)" }}>
             Limited Drop
+          </span>
+        )}
+        {dropStatus && (
+          <span className="text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full" style={{ background: "var(--serena-champagne)", color: "var(--serena-deep-burgundy)" }}>
+            {dropStatus}
           </span>
         )}
         {isLowStock && !isOutOfStock && (
@@ -141,6 +149,9 @@ export function JarCard({ product, featured = false }: JarCardProps) {
             {product.includedTypes.slice(0, 3).join(", ")}
           </p>
         )}
+        <p className="text-[11px]" style={{ color: "var(--serena-muted)" }}>
+          Ships in {DELIVERY_WINDOW}
+        </p>
 
         {/* Price */}
         <div className="flex items-baseline gap-2 mt-auto pt-2">
@@ -167,7 +178,7 @@ export function JarCard({ product, featured = false }: JarCardProps) {
               animation: added ? "jellyBounce 0.4s ease" : "",
             }}
           >
-            {isOutOfStock ? "Sold Out" : added ? "✓ Added to Jar!" : "Add to Jar"}
+            {isOutOfStock ? "Sold Out" : added ? "✓ Saved" : "Save to Order"}
           </button>
           <a
             href={createWhatsAppLink(productOrderMessage(product.name))}

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/cart";
-import { createWhatsAppLink, cartOrderMessage } from "@/lib/whatsapp";
-import { INSTAGRAM_URL, SHIPPING_FEE, FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
+import { createWhatsAppLink } from "@/lib/whatsapp";
+import { DELIVERY_WINDOW, INSTAGRAM_URL, PAYMENT_NOTE, SHIPPING_FEE, FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 
 export default function CheckoutPage() {
   const { items, subtotal, mounted } = useCart();
@@ -33,7 +33,16 @@ export default function CheckoutPage() {
     setTimeout(() => setCopied(false), 2500);
   }
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <div className="min-h-screen pt-20 flex items-center justify-center" style={{ background: "var(--serena-pearl)" }}>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 rounded-full border-2 border-[rgba(198,161,91,0.25)] border-t-[var(--serena-gold)] animate-spin" />
+          <p className="text-sm" style={{ color: "var(--serena-muted)" }}>Preparing your order options...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -61,8 +70,15 @@ export default function CheckoutPage() {
             How do you want to order?
           </h1>
           <p className="text-sm" style={{ color: "var(--serena-muted)" }}>
-            We handle all orders personally via WhatsApp or Instagram — quick &amp; friendly!
+            We handle all orders personally via WhatsApp or Instagram. No website payment is taken here.
           </p>
+        </div>
+
+        <div
+          className="rounded-2xl border p-4 mb-8 text-sm leading-relaxed"
+          style={{ background: "rgba(198,161,91,0.08)", borderColor: "rgba(198,161,91,0.25)", color: "var(--serena-muted)" }}
+        >
+          <strong style={{ color: "var(--serena-deep-burgundy)" }}>What happens next:</strong> {PAYMENT_NOTE} Delivery is usually {DELIVERY_WINDOW}.
         </div>
 
         {/* Order summary */}
@@ -183,7 +199,7 @@ export default function CheckoutPage() {
         </div>
 
         <p className="text-xs text-center" style={{ color: "var(--serena-muted)" }}>
-          We personally confirm every order. No prepayment until we confirm availability! ✦
+          We personally confirm every order. No prepayment until availability is confirmed. ✦
         </p>
 
         <div className="flex justify-center mt-4">

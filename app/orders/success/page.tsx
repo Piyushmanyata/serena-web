@@ -20,6 +20,7 @@ export default function SuccessPage() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem("serena_last_order");
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate browser-only order receipt after mount
       if (raw) setOrder(JSON.parse(raw));
     } catch {
       // ignore

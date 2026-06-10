@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { JarSVG } from "@/components/brand/Logo";
 import { JarCard } from "@/components/product/JarCard";
 import { getFeaturedProducts } from "@/lib/products";
 import { createWhatsAppLink, generalMessage } from "@/lib/whatsapp";
-import { VIBE_CONFIG, JEWELLERY_TYPES, MYSTERY_BONUS_NOTE, INSTAGRAM_URL, SERENA_CONTACT } from "@/lib/constants";
+import { DELIVERY_WINDOW, VIBE_CONFIG, JEWELLERY_TYPES, MYSTERY_BONUS_NOTE, INSTAGRAM_URL } from "@/lib/constants";
 
 const FEATURED = getFeaturedProducts(8);
 
@@ -73,9 +73,6 @@ const MYSTERY_ITEMS = [
 
 function HeroSection() {
   const letters = "SERENA".split("");
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => { setIsClient(true); }, []);
 
   return (
     <section
@@ -87,7 +84,7 @@ function HeroSection() {
     >
       {/* Background floating emojis — large and prominent */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        {isClient && BG_EMOJIS.map((p, i) => (
+        {BG_EMOJIS.map((p, i) => (
           <span
             key={i}
             className="absolute select-none"
@@ -213,7 +210,7 @@ function HeroSection() {
               />
 
               {/* Swirling jewellery emojis — all spiral into the jar */}
-              {isClient && SWIRL_CONFIG.map((item, i) => (
+              {SWIRL_CONFIG.map((item, i) => (
                 <span
                   key={i}
                   aria-hidden="true"
@@ -726,6 +723,70 @@ function InstagramSection() {
   );
 }
 
+/* ─── GIFTING SECTION ───────────────────────────────────────── */
+function GiftingSection() {
+  const occasions = ["Birthday", "Best friend", "Bridesmaid", "Festival", "Farewell", "Self-care"];
+
+  return (
+    <section className="py-20 md:py-28" style={{ background: "var(--serena-pearl)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="flex flex-col gap-5">
+          <div className="text-xs font-semibold uppercase tracking-[0.3em]" style={{ color: "var(--serena-gold)" }}>Giftable Mystery Jars</div>
+          <h2 className="font-serif text-3xl md:text-5xl font-bold leading-tight" style={{ color: "var(--serena-deep-burgundy)" }}>
+            Send a reveal that feels personal.
+          </h2>
+          <p className="text-base leading-relaxed" style={{ color: "var(--serena-muted)" }}>
+            Tell us who it is for, the occasion, their style, and your budget. We curate a gift-ready SERENA jar with the same mystery, tuned to the person receiving it.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {occasions.map((occasion) => (
+              <span key={occasion} className="text-xs px-3 py-1.5 rounded-full border" style={{ borderColor: "rgba(198,161,91,0.32)", color: "var(--serena-muted)", background: "rgba(255,250,243,0.7)" }}>
+                {occasion}
+              </span>
+            ))}
+          </div>
+          <p className="text-sm" style={{ color: "var(--serena-muted)" }}>
+            Typical delivery: {DELIVERY_WINDOW}.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/gift"
+              className="btn-shimmer inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold"
+              style={{ background: "var(--serena-deep-burgundy)", color: "var(--serena-cream)", border: "1px solid var(--serena-gold)" }}
+            >
+              Gift a Jar
+            </Link>
+            <a
+              href={createWhatsAppLink("Hi SERENA! I want to gift a mystery jewellery jar. Can you help me curate one?")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold border hover-lift"
+              style={{ borderColor: "var(--serena-gold)", color: "var(--serena-deep-burgundy)" }}
+            >
+              WhatsApp Gift Help
+            </a>
+          </div>
+        </div>
+
+        <div className="relative rounded-3xl p-8 overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(82,17,28,0.95), rgba(139,30,45,0.88))", border: "1px solid rgba(198,161,91,0.3)" }}>
+          <div className="absolute inset-0 opacity-20 pointer-events-none" aria-hidden="true" style={{ background: "radial-gradient(circle at 70% 20%, rgba(232,201,122,0.65), transparent 45%)" }} />
+          <div className="relative text-center">
+            <div className="text-6xl mb-4 jar-float">🎁</div>
+            <h3 className="font-serif text-2xl font-bold text-white mb-3">What we ask before curating</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+              {["Recipient vibe", "Occasion date", "Metal preference", "Favourite colours"].map((item) => (
+                <div key={item} className="rounded-2xl px-4 py-3 text-sm font-medium" style={{ background: "rgba(255,250,243,0.12)", color: "var(--serena-champagne)", border: "1px solid rgba(198,161,91,0.2)" }}>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─── TESTIMONIALS ──────────────────────────────────────────── */
 function TestimonialsSection() {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
@@ -839,6 +900,7 @@ export default function HomePage() {
       <CustomizerPreviewSection />
       <WhatsInsideSection />
       <InstagramSection />
+      <GiftingSection />
       <TestimonialsSection />
       <FinalCTASection />
     </>

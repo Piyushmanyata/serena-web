@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
 import { JarCard } from "@/components/product/JarCard";
 import { SEED_PRODUCTS } from "@/lib/products";
-import { JEWELLERY_TYPES } from "@/lib/constants";
+import { DELIVERY_WINDOW, FREE_SHIPPING_THRESHOLD, JEWELLERY_TYPES, PAYMENT_NOTE, SHIPPING_FEE, VIBES } from "@/lib/constants";
+import { productMatchesVibe } from "@/lib/commerce";
 import type { Product } from "@/types";
 
-const VIBES = ["Coquette", "Grunge Fairy", "Clean Girl", "Streetwear", "90s", "Gothic", "Celestial", "Ocean"];
+const SHOP_VIBES = VIBES.filter((vibe) => vibe !== "Surprise Me");
 const METALS = ["Gold", "Silver", "Rose Gold", "Gunmetal", "Mixed"];
 const PRICE_RANGES = [
   { label: "Under ₹399", min: 0, max: 399 },
@@ -45,7 +45,7 @@ function filterProducts(
 
   if (selectedVibes.length) {
     result = result.filter((p) =>
-      selectedVibes.some((v) => p.moodTags.some((t) => t.toLowerCase().includes(v.toLowerCase())))
+      selectedVibes.some((v) => productMatchesVibe(p, v))
     );
   }
 
@@ -128,6 +128,21 @@ export default function ShopPage() {
         <p className="text-base max-w-lg mx-auto" style={{ color: "var(--serena-muted)" }}>
           {SEED_PRODUCTS.length} curated jewellery jars · 5–10 pieces each · Custom batches available
         </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2 px-4">
+          {[
+            `Ships in ${DELIVERY_WINDOW}`,
+            `Rs ${SHIPPING_FEE} shipping · free above Rs ${FREE_SHIPPING_THRESHOLD}`,
+            "Order confirmed personally before payment",
+          ].map((note) => (
+            <span
+              key={note}
+              className="text-xs px-3 py-1.5 rounded-full border"
+              style={{ borderColor: "rgba(198,161,91,0.35)", color: "var(--serena-deep-burgundy)", background: "rgba(255,250,243,0.7)" }}
+            >
+              {note}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -178,7 +193,7 @@ export default function ShopPage() {
             <div>
               <h3 className="text-xs font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: "var(--serena-gold)" }}>Vibe</h3>
               <div className="flex flex-col gap-2">
-                {VIBES.map((v) => (
+                {SHOP_VIBES.map((v) => (
                   <label key={v} className="flex items-center gap-2 cursor-pointer group">
                     <input
                       type="checkbox"
@@ -254,6 +269,12 @@ export default function ShopPage() {
               <p className="text-sm" style={{ color: "var(--serena-muted)" }}>
                 {filtered.length} jar{filtered.length !== 1 ? "s" : ""} found
               </p>
+            </div>
+            <div
+              className="mb-5 rounded-2xl border px-4 py-3 text-sm"
+              style={{ background: "rgba(198,161,91,0.08)", borderColor: "rgba(198,161,91,0.24)", color: "var(--serena-muted)" }}
+            >
+              {PAYMENT_NOTE}
             </div>
 
             {filtered.length === 0 ? (

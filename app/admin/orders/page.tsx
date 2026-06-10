@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createWhatsAppLink } from "@/lib/whatsapp";
-import { SERENA_CONTACT } from "@/lib/constants";
 
 interface Order {
   id: string;
@@ -33,6 +32,7 @@ export default function AdminOrdersPage() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate browser-only admin data after mount
     setOrders(JSON.parse(localStorage.getItem("serena_orders") ?? "[]"));
   }, []);
 

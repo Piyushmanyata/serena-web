@@ -51,7 +51,9 @@ export function Footer() {
               {[
                 { href: "/shop", label: "Shop All Jars" },
                 { href: "/customize", label: "Customize a Jar" },
+                { href: "/gift", label: "Gift a Jar" },
                 { href: "/about", label: "Our Story" },
+                { href: "/faq", label: "FAQ" },
                 { href: "/contact", label: "Contact" },
               ].map((l) => (
                 <Link
@@ -115,6 +117,7 @@ export function Footer() {
             {[
               { href: "/privacy", label: "Privacy Policy" },
               { href: "/terms", label: "Terms" },
+              { href: "/faq", label: "FAQ" },
             ].map((l) => (
               <Link
                 key={l.href}

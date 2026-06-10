@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { JarSVG } from "@/components/brand/Logo";
 import { createWhatsAppLink, generalMessage } from "@/lib/whatsapp";
-import { SERENA_CONTACT, SERENA_CO_OWNER, INSTAGRAM_URL } from "@/lib/constants";
+import { SERENA_CONTACT, SERENA_CO_OWNER } from "@/lib/constants";
 
 export const metadata = {
   title: "About SERENA — Our Story",

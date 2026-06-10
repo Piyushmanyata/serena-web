@@ -45,6 +45,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     const ok = sessionStorage.getItem("serena_admin") === "true";
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate browser-only admin session after mount
     if (ok) setAuthed(true);
     setOrders(JSON.parse(localStorage.getItem("serena_orders") ?? "[]"));
     setCustomOrders(JSON.parse(localStorage.getItem("serena_custom_requests") ?? "[]"));

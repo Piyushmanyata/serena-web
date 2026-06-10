@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createWhatsAppLink } from "@/lib/whatsapp";
-import { SERENA_CONTACT } from "@/lib/constants";
+import { INSTAGRAM_URL, SERENA_CONTACT } from "@/lib/constants";
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", phone: "", message: "", type: "Order" });
@@ -51,7 +51,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-2" style={{ color: "var(--serena-gold)" }}>Instagram</p>
-                  <a href="https://instagram.com/serena.jars" target="_blank" rel="noopener noreferrer" className="text-lg font-medium transition-colors hover:text-[#bc1888]" style={{ color: "var(--serena-ink)" }}>
+                  <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-lg font-medium transition-colors hover:text-[#bc1888]" style={{ color: "var(--serena-ink)" }}>
                     {SERENA_CONTACT.instagram}
                   </a>
                 </div>

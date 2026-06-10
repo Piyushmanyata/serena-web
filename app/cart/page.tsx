@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCart } from "@/lib/cart";
 import { createWhatsAppLink, cartOrderMessage } from "@/lib/whatsapp";
-import { SHIPPING_FEE, FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
+import { DELIVERY_WINDOW, SHIPPING_FEE, FREE_SHIPPING_THRESHOLD, PAYMENT_NOTE } from "@/lib/constants";
 import { getProductBySlug } from "@/lib/products";
 import type { CartItem } from "@/types";
 
@@ -139,14 +139,23 @@ export default function CartPage() {
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : subtotal > 0 ? SHIPPING_FEE : 0;
   const total = subtotal + shipping;
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <div className="min-h-screen pt-20 flex items-center justify-center" style={{ background: "var(--serena-pearl)" }}>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 rounded-full border-2 border-[rgba(198,161,91,0.25)] border-t-[var(--serena-gold)] animate-spin" />
+          <p className="text-sm" style={{ color: "var(--serena-muted)" }}>Loading your saved order...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center" style={{ background: "var(--serena-pearl)" }}>
         <div className="text-center px-4">
           <div className="text-7xl mb-6 jar-float inline-block">🫙</div>
-          <h1 className="font-serif text-3xl font-bold mb-3" style={{ color: "var(--serena-deep-burgundy)" }}>Your jar is empty</h1>
+          <h1 className="font-serif text-3xl font-bold mb-3" style={{ color: "var(--serena-deep-burgundy)" }}>Your saved order is empty</h1>
           <p className="text-base mb-8" style={{ color: "var(--serena-muted)" }}>Discover mystery jewellery jars made for your mood.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/shop" className="btn-shimmer inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold" style={{ background: "var(--serena-deep-burgundy)", color: "var(--serena-cream)", border: "1px solid var(--serena-gold)" }}>
@@ -165,11 +174,32 @@ export default function CartPage() {
     <div className="min-h-screen pt-20" style={{ background: "var(--serena-pearl)" }}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="font-serif text-3xl md:text-4xl font-bold mb-8" style={{ color: "var(--serena-deep-burgundy)" }}>
-          Your Cart{" "}
+          Your Saved Order{" "}
           <span className="text-xl font-normal" style={{ color: "var(--serena-muted)" }}>
             ({count} {count === 1 ? "item" : "items"})
           </span>
         </h1>
+        <div
+          className="mb-8 rounded-2xl border p-5"
+          style={{ background: "rgba(198,161,91,0.08)", borderColor: "rgba(198,161,91,0.25)" }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              ["1", "Save jars", "Choose ready drops or custom jars you want SERENA to reserve."],
+              ["2", "Send on WhatsApp", "Your order details are pre-filled so you do not need to retype anything."],
+              ["3", "Confirm + pay", `We confirm availability, delivery, and payment details. Delivery: ${DELIVERY_WINDOW}.`],
+            ].map(([num, title, desc]) => (
+              <div key={title} className="flex gap-3">
+                <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ background: "var(--serena-deep-burgundy)", color: "var(--serena-cream)" }}>{num}</span>
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: "var(--serena-ink)" }}>{title}</p>
+                  <p className="text-xs mt-1 leading-relaxed" style={{ color: "var(--serena-muted)" }}>{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs mt-4" style={{ color: "var(--serena-muted)" }}>{PAYMENT_NOTE}</p>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart items */}
@@ -301,7 +331,7 @@ export default function CartPage() {
                   className="btn-shimmer w-full py-4 rounded-full font-semibold text-sm text-center"
                   style={{ background: "var(--serena-deep-burgundy)", color: "var(--serena-cream)", border: "1px solid var(--serena-gold)" }}
                 >
-                  ✦ Choose How to Order
+                  ✦ Choose How to Send Order
                 </Link>
                 <a
                   href={createWhatsAppLink(cartOrderMessage(items, total))}

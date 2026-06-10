@@ -8,6 +8,8 @@ import { JarCard } from "@/components/product/JarCard";
 import { getProductBySlug, getRelatedProducts } from "@/lib/products";
 import { createWhatsAppLink, productOrderMessage } from "@/lib/whatsapp";
 import { useCart } from "@/lib/cart";
+import { DELIVERY_WINDOW, FAQS, FREE_SHIPPING_THRESHOLD, PAYMENT_NOTE, SHIPPING_FEE, SITE_URL } from "@/lib/constants";
+import { formatPrice, getDropStatus } from "@/lib/commerce";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -21,8 +23,34 @@ export default function ProductPage({ params }: Props) {
 
   const related = getRelatedProducts(product, 3);
   const isLowStock = product.stock > 0 && product.stock <= product.lowStockThreshold;
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: `${SITE_URL}/opengraph-image`,
+    brand: {
+      "@type": "Brand",
+      name: "SERENA",
+    },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "INR",
+      price: product.price,
+      availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      url: `${SITE_URL}/shop/${product.slug}`,
+    },
+  };
 
-  return <ProductClient product={product} related={related} isLowStock={isLowStock} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <ProductClient product={product} related={related} isLowStock={isLowStock} />
+    </>
+  );
 }
 
 function ProductClient({ product, related, isLowStock }: {
@@ -33,6 +61,7 @@ function ProductClient({ product, related, isLowStock }: {
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const { addToCart } = useCart();
+  const dropStatus = getDropStatus(product);
 
   function handleAdd() {
     addToCart(product, qty);
@@ -66,6 +95,9 @@ function ProductClient({ product, related, isLowStock }: {
               <div className="absolute top-4 left-4 flex flex-col gap-2">
                 {product.isLimitedDrop && (
                   <span className="text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full text-white" style={{ background: "var(--serena-burgundy)" }}>Limited Drop</span>
+                )}
+                {dropStatus && (
+                  <span className="text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full" style={{ background: "var(--serena-champagne)", color: "var(--serena-deep-burgundy)" }}>{dropStatus}</span>
                 )}
                 {isLowStock && (
                   <span className="text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full text-white" style={{ background: "#b45309" }}>Only {product.stock} left</span>
@@ -130,6 +162,22 @@ function ProductClient({ product, related, isLowStock }: {
               )}
             </div>
 
+            <div
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2 rounded-2xl border p-3"
+              style={{ borderColor: "rgba(198,161,91,0.25)", background: "rgba(198,161,91,0.08)" }}
+            >
+              {[
+                ["Delivery", DELIVERY_WINDOW],
+                ["Shipping", `${formatPrice(SHIPPING_FEE)} · free above ${formatPrice(FREE_SHIPPING_THRESHOLD)}`],
+                ["Payment", "After personal confirmation"],
+              ].map(([label, value]) => (
+                <div key={label} className="rounded-xl px-3 py-2" style={{ background: "rgba(255,250,243,0.55)" }}>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em]" style={{ color: "var(--serena-gold)" }}>{label}</p>
+                  <p className="text-xs mt-1" style={{ color: "var(--serena-muted)" }}>{value}</p>
+                </div>
+              ))}
+            </div>
+
             {/* Metal tones */}
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-2" style={{ color: "var(--serena-gold)" }}>Metal Tones</p>
@@ -171,7 +219,7 @@ function ProductClient({ product, related, isLowStock }: {
                   border: "1px solid var(--serena-gold)",
                 }}
               >
-                {product.stock === 0 ? "Sold Out" : added ? "✓ Added to Cart" : "Add to Cart"}
+                {product.stock === 0 ? "Sold Out" : added ? "✓ Saved to Order" : "Save to Order"}
               </button>
             </div>
 
@@ -191,7 +239,7 @@ function ProductClient({ product, related, isLowStock }: {
                 className="flex items-center justify-center gap-2 py-3 rounded-full font-semibold text-sm border transition-all hover:-translate-y-0.5"
                 style={{ borderColor: "var(--serena-gold)", color: "var(--serena-deep-burgundy)" }}
               >
-                Buy Now
+                Choose How to Order
               </Link>
             </div>
 
@@ -210,9 +258,33 @@ function ProductClient({ product, related, isLowStock }: {
             <div className="text-xs leading-relaxed p-4 rounded-xl" style={{ background: "rgba(198,161,91,0.08)", color: "var(--serena-muted)" }}>
               <p>SERENA jars include premium fashion jewellery. Exact pieces may vary based on availability and preferences.</p>
               <p className="mt-1">Keep away from water, perfume, and harsh chemicals.</p>
+              <p className="mt-1">{PAYMENT_NOTE}</p>
             </div>
           </div>
         </div>
+
+        <section className="mb-20">
+          <div className="gold-divider mb-10" />
+          <h2 className="font-serif text-2xl md:text-3xl font-bold mb-6" style={{ color: "var(--serena-deep-burgundy)" }}>
+            Before You Order
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {FAQS.slice(0, 4).map((faq) => (
+              <details
+                key={faq.question}
+                className="rounded-2xl border p-4"
+                style={{ borderColor: "rgba(198,161,91,0.22)", background: "rgba(255,250,243,0.72)" }}
+              >
+                <summary className="cursor-pointer text-sm font-semibold" style={{ color: "var(--serena-ink)" }}>
+                  {faq.question}
+                </summary>
+                <p className="text-sm mt-3 leading-relaxed" style={{ color: "var(--serena-muted)" }}>
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
 
         {/* Related products */}
         {related.length > 0 && (

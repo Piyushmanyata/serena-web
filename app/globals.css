@@ -39,6 +39,11 @@ body {
   cursor: default;
 }
 
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 760px;
+}
+
 /* ─── TYPOGRAPHY ────────────────────────────────────────────── */
 .font-serif { font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif; }
 .font-display { font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif; }
@@ -447,6 +452,22 @@ body {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .float-around,
+  .float-slow,
+  .float-medium,
+  .rotate-slow,
+  .mystery-card-pulse {
+    animation-duration: 12s !important;
+  }
+
+  .interactive-card:hover,
+  .jar-card:hover,
+  .hover-lift:hover {
+    transform: none;
   }
 }
 

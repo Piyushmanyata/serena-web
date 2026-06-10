@@ -36,6 +36,7 @@ export default function AdminSettingsPage() {
 
   useEffect(() => {
     const raw = localStorage.getItem("serena_settings");
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate browser-only admin settings after mount
     if (raw) setSettings(JSON.parse(raw));
   }, []);
 

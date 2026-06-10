@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { JarSVG } from "@/components/brand/Logo";
 import { VIBES, JEWELLERY_TYPES, METAL_TONES, COLOUR_MOODS, BUDGET_OPTIONS, VIBE_CONFIG } from "@/lib/constants";
@@ -33,7 +33,6 @@ export default function CustomizePage() {
 
 function CustomizePageInner() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<CustomJarRequest>(() => ({
     ...initialState,
@@ -73,7 +72,6 @@ function CustomizePageInner() {
   }
 
   function handleSubmit() {
-    const waMsg = customJarMessage(form);
     // Save to localStorage for admin view
     const requests = JSON.parse(localStorage.getItem("serena_custom_requests") ?? "[]");
     requests.push({ ...form, status: "new", createdAt: new Date().toISOString() });

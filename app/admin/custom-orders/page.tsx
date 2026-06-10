@@ -26,6 +26,7 @@ export default function AdminCustomOrdersPage() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate browser-only admin data after mount
     setRequests(JSON.parse(localStorage.getItem("serena_custom_requests") ?? "[]"));
   }, []);
 
