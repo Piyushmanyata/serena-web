@@ -218,28 +218,45 @@ function HeroSection() {
 function MysteryJarSection() {
   const [revealedItems, setRevealedItems] = useState<number[]>([]);
   const [jarShaking, setJarShaking] = useState(false);
-  const [confetti, setConfetti] = useState<Array<{ id: string; left: number; delay: number; size: number; spin: number }>>([]);
+  const [confetti, setConfetti] = useState<Array<{
+    id: string; left: number; delay: number; size: number;
+    spin: number; drift: number; duration: number; color: string; isRect: boolean;
+  }>>([]);
+
+  const CONFETTI_COLORS = [
+    "linear-gradient(135deg,#c6a15b,#e8c97a)",
+    "rgba(248,239,226,0.96)",
+    "rgba(139,30,45,0.88)",
+    "linear-gradient(135deg,#e8c97a,#fffaf3)",
+    "rgba(198,161,91,0.95)",
+    "rgba(234,216,183,0.92)",
+    "rgba(255,255,255,0.9)",
+    "linear-gradient(135deg,#8b1e2d,#c6a15b)",
+  ];
 
   function shakeJar() {
     setJarShaking(true);
     setRevealedItems([]);
-    const burst = Array.from({ length: 20 }, (_, i) => ({
+    const burst = Array.from({ length: 78 }, (_, i) => ({
       id: `${Date.now()}-${i}`,
-      left: 12 + Math.random() * 76,
-      delay: Math.random() * 0.15,
-      size: 8 + Math.random() * 8,
-      spin: -80 + Math.random() * 160,
+      left: Math.random() * 100,
+      delay: Math.random() * 0.75,
+      size: 5 + Math.random() * 12,
+      spin: -720 + Math.random() * 1440,
+      drift: -100 + Math.random() * 200,
+      duration: 2.0 + Math.random() * 1.6,
+      color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+      isRect: Math.random() > 0.42,
     }));
     setConfetti(burst);
     setTimeout(() => {
       setJarShaking(false);
-      // Reveal items one by one
       MYSTERY_ITEMS.forEach((_, i) => {
         setTimeout(() => {
           setRevealedItems((prev) => [...prev, i]);
         }, i * 200);
       });
-      setTimeout(() => setConfetti([]), 1700);
+      setTimeout(() => setConfetti([]), 3800);
     }, 600);
   }
 
@@ -248,6 +265,26 @@ function MysteryJarSection() {
       className="py-20 md:py-28 relative overflow-hidden"
       style={{ background: "linear-gradient(135deg, #52111c 0%, #1a0509 50%, #2d0d16 100%)" }}
     >
+      {/* Full-screen confetti rain — fixed so it covers the entire viewport */}
+      {confetti.map((piece) => (
+        <span
+          key={piece.id}
+          aria-hidden="true"
+          className="jar-confetti-screen"
+          style={{
+            left: `${piece.left}%`,
+            width: `${piece.isRect ? piece.size * 0.55 : piece.size}px`,
+            height: `${piece.isRect ? piece.size * 1.6 : piece.size}px`,
+            borderRadius: piece.isRect ? "3px" : "50%",
+            background: piece.color,
+            "--fall-delay": `${piece.delay}s`,
+            "--fall-dur": `${piece.duration}s`,
+            "--spin-angle": `${piece.spin}deg`,
+            "--drift-x": `${piece.drift}px`,
+          } as CSSProperties}
+        />
+      ))}
+
       {/* Animated bg sparkles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {["✨","💎","✦"].map((e, i) => (
@@ -276,22 +313,6 @@ function MysteryJarSection() {
             {/* Left — Mystery jar interactive */}
             <div className="flex flex-col items-center gap-6">
               <div className="relative">
-                <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-                  {confetti.map((piece) => (
-                    <span
-                      key={piece.id}
-                      className="absolute block jar-confetti"
-                      style={{
-                        left: `${piece.left}%`,
-                        top: "34%",
-                        width: `${piece.size}px`,
-                        height: `${piece.size}px`,
-                        animationDelay: `${piece.delay}s`,
-                        "--spin-angle": `${piece.spin}deg`,
-                      } as CSSProperties}
-                    />
-                  ))}
-                </div>
                 {/* Mystery question marks floating around the jar */}
                 {["?", "?", "?"].map((q, i) => (
                   <span
@@ -310,30 +331,39 @@ function MysteryJarSection() {
                   </span>
                 ))}
 
+                {/* Glow ring behind jar */}
                 <div
-                  className={`relative ${jarShaking ? "jelly-bounce" : "jar-float"}`}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none gold-rim-glow"
+                  style={{ width: "220px", height: "220px" }}
+                  aria-hidden="true"
+                />
+
+                <button
+                  type="button"
                   onClick={shakeJar}
-                  style={{ cursor: "pointer" }}
-                  title="Tap to shake the jar!"
+                  aria-label="Tap to reveal jar contents"
+                  className={`relative ${jarShaking ? "jelly-bounce" : "jar-float"} focus:outline-none group`}
+                  style={{ cursor: "pointer", background: "transparent", border: "none", padding: 0 }}
                 >
                   <JarSVG
                     accentColor="#c6a15b"
                     label="?"
-                    className="w-52 drop-shadow-[0_20px_50px_rgba(198,161,91,0.45)]"
+                    className="w-56 drop-shadow-[0_24px_60px_rgba(198,161,91,0.55)] group-hover:drop-shadow-[0_28px_70px_rgba(198,161,91,0.75)] transition-all duration-300"
                   />
-                </div>
+                </button>
 
-                {/* Tap hint */}
+                {/* Tap hint pill */}
                 <button
                   type="button"
                   onClick={shakeJar}
-                  className="mt-4 w-full rounded-full px-5 py-3 text-center font-serif text-xl sm:text-2xl font-bold tracking-wide transition-all hover:scale-[1.01] active:scale-[0.99]"
+                  className="mt-5 w-full rounded-full px-6 py-3.5 text-center font-serif font-bold tracking-wide transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
                   style={{
+                    fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)",
                     color: "var(--serena-gold-light)",
-                    background: "linear-gradient(180deg, rgba(198,161,91,0.08), rgba(198,161,91,0.02))",
-                    border: "1px solid rgba(198,161,91,0.24)",
-                    boxShadow: "0 10px 30px rgba(82,17,28,0.18)",
-                    textShadow: "0 2px 10px rgba(82,17,28,0.35)",
+                    background: "linear-gradient(180deg, rgba(198,161,91,0.14) 0%, rgba(198,161,91,0.04) 100%)",
+                    border: "1px solid rgba(198,161,91,0.3)",
+                    boxShadow: "0 12px 32px rgba(82,17,28,0.25), 0 1px 0 rgba(198,161,91,0.15) inset",
+                    textShadow: "0 2px 12px rgba(82,17,28,0.4)",
                   }}
                 >
                   🫙 Tap the jar to reveal!

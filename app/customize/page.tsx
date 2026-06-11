@@ -4,11 +4,12 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { JarSVG } from "@/components/brand/Logo";
-import { VIBES, JEWELLERY_TYPES, METAL_TONES, COLOUR_MOODS, BUDGET_OPTIONS, VIBE_CONFIG } from "@/lib/constants";
+import { VIBES, JEWELLERY_TYPES, METAL_TONES, BUDGET_OPTIONS, VIBE_CONFIG } from "@/lib/constants";
 import { createWhatsAppLink, customJarMessage } from "@/lib/whatsapp";
 import type { CustomJarRequest, JewelleryType, MetalTone } from "@/types";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
-const STEPS = ["Vibe", "Jewellery", "Metal", "Colour", "Upload", "Budget", "Notes", "Review"];
+const STEPS = ["Vibe", "Jewellery", "Metal", "Upload", "Budget", "Notes", "Review"];
 
 const initialState: CustomJarRequest = {
   customerName: "",
@@ -37,9 +38,9 @@ function CustomizePageInner() {
   const [form, setForm] = useState<CustomJarRequest>(() => ({
     ...initialState,
     selectedVibe: searchParams.get("vibe") ?? "",
+    colourPalette: "Discuss on WhatsApp",
   }));
   const [submitted, setSubmitted] = useState(false);
-  const [customColour, setCustomColour] = useState("");
 
   const vibeConfig = form.selectedVibe ? VIBE_CONFIG[form.selectedVibe] : null;
   const accentColor = vibeConfig?.colors[0] ?? "#c6a15b";
@@ -62,11 +63,10 @@ function CustomizePageInner() {
       case 0: return !!form.selectedVibe;
       case 1: return form.selectedJewelleryTypes.length > 0;
       case 2: return !!form.metalTone;
-      case 3: return !!form.colourPalette;
-      case 4: return true; // upload optional
-      case 5: return form.budget > 0;
-      case 6: return true; // notes optional
-      case 7: return !!(form.customerName && form.phone);
+      case 3: return true; // upload optional
+      case 4: return form.budget > 0;
+      case 5: return true; // notes optional
+      case 6: return !!(form.customerName && form.phone);
       default: return true;
     }
   }
@@ -111,7 +111,7 @@ function CustomizePageInner() {
 
   return (
     <div className="min-h-screen pt-20" style={{ background: "var(--serena-pearl)" }}>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <ScrollReveal variant="fade-in" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page header */}
         <div className="text-center mb-8">
           <div className="text-xs font-semibold uppercase tracking-[0.3em] mb-3" style={{ color: "var(--serena-gold)" }}>Custom Jar Builder</div>
@@ -220,39 +220,8 @@ function CustomizePageInner() {
                 </div>
               )}
 
-              {/* Step 3: Colour mood */}
+              {/* Step 3: Upload references */}
               {step === 3 && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {COLOUR_MOODS.map((mood) => {
-                    const isActive = form.colourPalette === mood;
-                    const isCustom = mood === "Custom";
-                    return (
-                      <div key={mood}>
-                        <button
-                          onClick={() => update("colourPalette", isCustom ? customColour || "Custom" : mood)}
-                          className={`w-full p-3 rounded-xl border text-left text-sm font-medium transition-all duration-200 ${isActive ? "shadow-[0_2px_12px_rgba(198,161,91,0.3)]" : "hover:border-[rgba(198,161,91,0.5)]"}`}
-                          style={{ background: isActive ? "rgba(255,250,243,0.9)" : "transparent", borderColor: isActive ? "var(--serena-gold)" : "rgba(198,161,91,0.2)", color: "var(--serena-ink)" }}
-                        >
-                          {mood}
-                        </button>
-                        {isCustom && isActive && (
-                          <input
-                            type="text"
-                            placeholder="Describe your preferred colours..."
-                            value={customColour}
-                            onChange={(e) => { setCustomColour(e.target.value); update("colourPalette", e.target.value || "Custom"); }}
-                            className="mt-2 w-full px-3 py-2 rounded-xl border text-sm outline-none"
-                            style={{ background: "rgba(255,250,243,0.8)", borderColor: "rgba(198,161,91,0.4)", color: "var(--serena-ink)" }}
-                          />
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Step 4: Upload references */}
-              {step === 4 && (
                 <div>
                   <p className="text-sm mb-4" style={{ color: "var(--serena-muted)" }}>
                     Upload outfit photos, jewellery inspo, Pinterest screenshots, colour palettes, or jar label ideas. (1–5 images, max 5MB each)
@@ -272,8 +241,8 @@ function CustomizePageInner() {
                 </div>
               )}
 
-              {/* Step 5: Budget */}
-              {step === 5 && (
+              {/* Step 4: Budget */}
+              {step === 4 && (
                 <div>
                   <p className="text-sm mb-4" style={{ color: "var(--serena-muted)" }}>Higher budgets allow more statement pieces, richer layering, and stronger customization.</p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
@@ -305,8 +274,8 @@ function CustomizePageInner() {
                 </div>
               )}
 
-              {/* Step 6: Notes */}
-              {step === 6 && (
+              {/* Step 5: Notes */}
+              {step === 5 && (
                 <div>
                   <textarea
                     placeholder="Tell us your vibe: soft, bold, minimal, gothic, beachy, bridal, college daily wear, birthday gift, etc."
@@ -319,8 +288,8 @@ function CustomizePageInner() {
                 </div>
               )}
 
-              {/* Step 7: Review */}
-              {step === 7 && (
+              {/* Step 6: Review */}
+              {step === 6 && (
                 <div className="flex flex-col gap-4">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
@@ -355,7 +324,6 @@ function CustomizePageInner() {
                       ["Vibe", form.selectedVibe],
                       ["Jewellery Types", form.selectedJewelleryTypes.join(", ")],
                       ["Metal Tone", form.metalTone],
-                      ["Colour Mood", form.colourPalette],
                       ["Budget", `₹${form.budget}`],
                       ["Notes", form.notes || "—"],
                     ].map(([label, val]) => (
@@ -437,7 +405,7 @@ function CustomizePageInner() {
             </div>
           </div>
         </div>
-      </div>
+      </ScrollReveal>
     </div>
   );
 }
