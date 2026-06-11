@@ -421,7 +421,7 @@ function MysteryJarSection() {
 
             {/* Left — Mystery jar interactive */}
             <div className="flex flex-col items-center gap-6">
-              <div className="relative">
+              <div className="relative flex flex-col items-center">
                 {/* Mystery question marks floating around the jar */}
                 {["?", "?", "?"].map((q, i) => (
                   <span
