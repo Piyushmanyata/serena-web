@@ -215,9 +215,81 @@ function HeroSection() {
 }
 
 /* ─── MYSTERY JAR SECTION (MAIN USP) ───────────────────────── */
+function playShakeSound() {
+  if (typeof window === "undefined") return;
+  try {
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+    const duration = 0.5;
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const now = ctx.currentTime;
+    for (let j = 0; j < 4; j++) {
+      const startTime = now + j * 0.12;
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.value = 280 - j * 35;
+      filter.Q.value = 7;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.06, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.08);
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start(startTime);
+      noise.stop(startTime + 0.1);
+    }
+  } catch (e) {
+    console.error("Audio error", e);
+  }
+}
+
+function playRevealSound(index: number) {
+  if (typeof window === "undefined") return;
+  try {
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+    const now = ctx.currentTime;
+    const notes = [523.25, 587.33, 659.25, 783.99, 880.00, 987.77, 1046.50];
+    const baseFreq = notes[index % notes.length];
+    const osc1 = ctx.createOscillator();
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(baseFreq, now);
+    osc1.frequency.exponentialRampToValueAtTime(baseFreq * 1.35, now + 0.25);
+    const osc2 = ctx.createOscillator();
+    osc2.type = "triangle";
+    osc2.frequency.setValueAtTime(baseFreq * 2.02, now);
+    const gainNode = ctx.createGain();
+    gainNode.gain.setValueAtTime(0.09, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+    osc1.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 0.4);
+    osc2.stop(now + 0.4);
+  } catch (e) {
+    console.error("Audio error", e);
+  }
+}
+
+/* ─── MYSTERY JAR SECTION (MAIN USP) ───────────────────────── */
 function MysteryJarSection() {
   const [revealedItems, setRevealedItems] = useState<number[]>([]);
+  const [currentItems, setCurrentItems] = useState<typeof MYSTERY_ITEMS>([]);
   const [jarShaking, setJarShaking] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [activeVibe, setActiveVibe] = useState<string | null>(null);
+  const [accentColor, setAccentColor] = useState("#c6a15b");
   const [confetti, setConfetti] = useState<Array<{
     id: string; left: number; delay: number; size: number;
     spin: number; drift: number; duration: number; color: string; isRect: boolean;
@@ -234,27 +306,59 @@ function MysteryJarSection() {
     "linear-gradient(135deg,#8b1e2d,#c6a15b)",
   ];
 
+  function handleMouseMove(e: React.MouseEvent<HTMLButtonElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    const rotateX = -(y / (rect.height / 2)) * 14;
+    const rotateY = (x / (rect.width / 2)) * 14;
+    setTilt({ x: rotateX, y: rotateY });
+  }
+
+  function handleMouseLeave() {
+    setTilt({ x: 0, y: 0 });
+  }
+
   function shakeJar() {
     setJarShaking(true);
     setRevealedItems([]);
-    const burst = Array.from({ length: 78 }, (_, i) => ({
+    playShakeSound();
+
+    // Select a random vibe configuration
+    const vibeKeys = Object.keys(VIBE_CONFIG).filter(v => v !== "Surprise Me");
+    const randomVibe = vibeKeys[Math.floor(Math.random() * vibeKeys.length)];
+    const config = VIBE_CONFIG[randomVibe];
+    setActiveVibe(randomVibe);
+    setAccentColor(config.colors[0] || "#c6a15b");
+
+    // Shuffle and pick a random subset of 4 to 6 items
+    const shuffled = [...MYSTERY_ITEMS].sort(() => Math.random() - 0.5);
+    const count = 4 + Math.floor(Math.random() * 3);
+    const selected = shuffled.slice(0, count);
+    setCurrentItems(selected);
+
+    // Generate confetti matching the selected vibe's color palette
+    const themeColors = config.colors && config.colors.length > 0 ? config.colors : CONFETTI_COLORS;
+    const burst = Array.from({ length: 82 }, (_, i) => ({
       id: `${Date.now()}-${i}`,
       left: Math.random() * 100,
-      delay: Math.random() * 0.75,
+      delay: Math.random() * 0.65,
       size: 5 + Math.random() * 12,
       spin: -720 + Math.random() * 1440,
-      drift: -100 + Math.random() * 200,
-      duration: 2.0 + Math.random() * 1.6,
-      color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+      drift: -120 + Math.random() * 240,
+      duration: 1.8 + Math.random() * 1.5,
+      color: themeColors[i % themeColors.length],
       isRect: Math.random() > 0.42,
     }));
     setConfetti(burst);
+
     setTimeout(() => {
       setJarShaking(false);
-      MYSTERY_ITEMS.forEach((_, i) => {
+      selected.forEach((_, i) => {
         setTimeout(() => {
           setRevealedItems((prev) => [...prev, i]);
-        }, i * 200);
+          playRevealSound(i);
+        }, i * 220);
       });
       setTimeout(() => setConfetti([]), 3800);
     }, 600);
@@ -263,7 +367,12 @@ function MysteryJarSection() {
   return (
     <section
       className="py-20 md:py-28 relative overflow-hidden"
-      style={{ background: "linear-gradient(135deg, #52111c 0%, #1a0509 50%, #2d0d16 100%)" }}
+      style={{
+        background: activeVibe 
+          ? `linear-gradient(135deg, #2d0d16 0%, #1a0509 40%, ${accentColor}1f 100%)`
+          : "linear-gradient(135deg, #52111c 0%, #1a0509 50%, #2d0d16 100%)",
+        transition: "background 0.8s ease"
+      }}
     >
       {/* Full-screen confetti rain — fixed so it covers the entire viewport */}
       {confetti.map((piece) => (
@@ -303,7 +412,7 @@ function MysteryJarSection() {
           </span>
         ))}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] opacity-15"
-          style={{ background: "radial-gradient(ellipse, rgba(198,161,91,0.5) 0%, transparent 70%)" }} />
+          style={{ background: `radial-gradient(ellipse, ${accentColor}44 0%, transparent 70%)`, transition: "background 0.8s ease" }} />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -334,20 +443,34 @@ function MysteryJarSection() {
                 {/* Glow ring behind jar */}
                 <div
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none gold-rim-glow"
-                  style={{ width: "220px", height: "220px" }}
+                  style={{
+                    width: "220px",
+                    height: "220px",
+                    background: `radial-gradient(circle, ${accentColor}55 0%, transparent 70%)`,
+                    transition: "background 0.8s ease"
+                  }}
                   aria-hidden="true"
                 />
 
                 <button
                   type="button"
                   onClick={shakeJar}
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
                   aria-label="Tap to reveal jar contents"
                   className={`relative ${jarShaking ? "jelly-bounce" : "jar-float"} focus:outline-none group`}
-                  style={{ cursor: "pointer", background: "transparent", border: "none", padding: 0 }}
+                  style={{
+                    cursor: "pointer",
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${tilt.x !== 0 || tilt.y !== 0 ? 1.05 : 1})`,
+                    transition: jarShaking ? "none" : "transform 0.15s cubic-bezier(0.25, 1, 0.5, 1)",
+                  }}
                 >
                   <JarSVG
-                    accentColor="#c6a15b"
-                    label="?"
+                    accentColor={accentColor}
+                    label={activeVibe ? (VIBE_CONFIG[activeVibe]?.emoji || "✦") : "?"}
                     className="w-56 drop-shadow-[0_24px_60px_rgba(198,161,91,0.55)] group-hover:drop-shadow-[0_28px_70px_rgba(198,161,91,0.75)] transition-all duration-300"
                   />
                 </button>
@@ -361,7 +484,7 @@ function MysteryJarSection() {
                     fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)",
                     color: "var(--serena-gold-light)",
                     background: "linear-gradient(180deg, rgba(198,161,91,0.14) 0%, rgba(198,161,91,0.04) 100%)",
-                    border: "1px solid rgba(198,161,91,0.3)",
+                    borderColor: accentColor,
                     boxShadow: "0 12px 32px rgba(82,17,28,0.25), 0 1px 0 rgba(198,161,91,0.15) inset",
                     textShadow: "0 2px 12px rgba(82,17,28,0.4)",
                   }}
@@ -377,18 +500,18 @@ function MysteryJarSection() {
                     What&apos;s inside? Tap to see&hellip;
                   </p>
                 ) : (
-                  MYSTERY_ITEMS.map((item, i) => (
+                  currentItems.map((item, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+                      className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium hover-lift"
                       style={{
-                        background: "rgba(198,161,91,0.18)",
-                        border: "1px solid rgba(198,161,91,0.38)",
+                        background: `${accentColor}2e`,
+                        border: `1px solid ${accentColor}7a`,
                         color: "var(--serena-champagne)",
                         opacity: revealedItems.includes(i) ? 1 : 0,
                         transform: revealedItems.includes(i) ? "scale(1) translateY(0)" : "scale(0.6) translateY(8px)",
                         transition: "all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                        boxShadow: revealedItems.includes(i) ? "0 2px 10px rgba(198,161,91,0.15)" : "none",
+                        boxShadow: revealedItems.includes(i) ? `0 4px 12px ${accentColor}33` : "none",
                       }}
                     >
                       <span>{item.emoji}</span>
@@ -408,7 +531,7 @@ function MysteryJarSection() {
                 <div className="absolute inset-0 pointer-events-none opacity-60" aria-hidden="true" style={{ background: "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.22), transparent 55%)" }} />
                 <div className="relative">
                   <p className="text-xs font-semibold uppercase tracking-[0.35em] mb-2" style={{ color: "var(--serena-gold)" }}>
-                    Lucky Bonus Surprises
+                    {activeVibe ? `${activeVibe} Vibe Lucky Surprises` : "Lucky Bonus Surprises"}
                   </p>
                   <p className="text-sm sm:text-base leading-relaxed" style={{ color: "var(--serena-champagne)" }}>
                     {MYSTERY_BONUS_NOTE}
