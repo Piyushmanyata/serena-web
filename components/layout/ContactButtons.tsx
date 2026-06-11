@@ -16,7 +16,7 @@ export function ContactButtons() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Contact SERENA on WhatsApp"
-          className="w-13 h-13 rounded-full flex items-center justify-center text-2xl shadow-[0_6px_24px_rgba(37,211,102,0.3)] transition-all duration-300 hover:scale-[1.12] hover:shadow-[0_8px_32px_rgba(37,211,102,0.45)] whatsapp-pulse"
+          className="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-[0_6px_24px_rgba(37,211,102,0.3)] transition-all duration-300 hover:scale-[1.12] hover:shadow-[0_8px_32px_rgba(37,211,102,0.45)] whatsapp-pulse"
           style={{ background: "#25D366" }}
         >
           <WhatsAppIcon />
@@ -24,7 +24,7 @@ export function ContactButtons() {
         <a
           href={`tel:${SERENA_CONTACT.phoneIntl}`}
           aria-label="Call SERENA owner Manyata Sodhani"
-          className="w-13 h-13 rounded-full flex items-center justify-center text-xl shadow-[0_6px_24px_rgba(82,17,28,0.25)] transition-all duration-300 hover:scale-[1.12] hover:shadow-[0_8px_32px_rgba(82,17,28,0.4)]"
+          className="w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-[0_6px_24px_rgba(82,17,28,0.25)] transition-all duration-300 hover:scale-[1.12] hover:shadow-[0_8px_32px_rgba(82,17,28,0.4)]"
           style={{ background: "var(--serena-burgundy)" }}
         >
           <PhoneIcon />

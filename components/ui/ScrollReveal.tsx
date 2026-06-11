@@ -23,9 +23,7 @@ export function ScrollReveal({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Check if user prefers reduced motion
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setIsVisible(true);
       return;
     }
@@ -34,7 +32,7 @@ export function ScrollReveal({
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.unobserve(entry.target);
+          observer.disconnect();
         }
       },
       { threshold }
@@ -46,9 +44,7 @@ export function ScrollReveal({
     }
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
+      observer.disconnect();
     };
   }, [threshold]);
 
@@ -76,7 +72,7 @@ export function ScrollReveal({
   return (
     <div
       ref={ref}
-      className={className}
+      className={["scroll-reveal", className].filter(Boolean).join(" ")}
       style={{
         ...getVariantStyles(),
         transitionProperty: "opacity, transform",

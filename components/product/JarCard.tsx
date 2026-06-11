@@ -36,8 +36,8 @@ export function JarCard({ product, featured = false }: JarCardProps) {
 
   return (
     <article
-      className={`jar-card group relative flex flex-col rounded-2xl overflow-hidden ${featured ? "shadow-[0_8px_40px_rgba(198,161,91,0.18)]" : "shadow-[0_4px_20px_rgba(0,0,0,0.08)]"}`}
-      style={{ background: "rgba(255,250,243,0.8)", border: "1px solid rgba(198,161,91,0.2)" }}
+      className={`jar-card group relative flex flex-col rounded-2xl overflow-hidden ${featured ? "shadow-[0_8px_40px_rgba(198,161,91,0.2)]" : "shadow-[0_2px_16px_rgba(0,0,0,0.07)]"}`}
+      style={{ background: "rgba(255,250,243,0.88)", border: "1px solid rgba(198,161,91,0.22)" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >

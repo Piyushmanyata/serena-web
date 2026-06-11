@@ -20,7 +20,7 @@ export const SERENA_CO_OWNER = {
 export const WHATSAPP_BASE = "https://wa.me/919875393417";
 export const INSTAGRAM_URL = "https://www.instagram.com/_serena_.co";
 export const INSTAGRAM_DM = "https://ig.me/m/_serena_.co";
-export const SITE_URL = "https://serena-web.vercel.app";
+export const SITE_URL = "https://serena-web-sand.vercel.app";
 
 export const JEWELLERY_TYPES: JewelleryType[] = [
   "Necklace / Pendant",

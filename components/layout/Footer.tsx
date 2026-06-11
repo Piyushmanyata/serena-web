@@ -7,7 +7,12 @@ export function Footer() {
   return (
     <footer
       className="relative pt-16 pb-12 mt-auto mobile-bottom-bar-padding"
-      style={{ background: "var(--serena-ink)", color: "var(--serena-champagne)" }}
+      style={{
+        background: "linear-gradient(180deg, #1d1512 0%, #130f0c 100%)",
+        color: "var(--serena-champagne)",
+        borderTop: "1px solid rgba(198,161,91,0.18)",
+        boxShadow: "0 -1px 0 rgba(198,161,91,0.1) inset",
+      }}
     >
       <div className="gold-divider mb-12 mx-8" />
 

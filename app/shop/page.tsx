@@ -183,7 +183,7 @@ export default function ShopPage() {
           <div className="fixed inset-0 z-50 flex sm:hidden" role="dialog" aria-modal="true">
             {/* Backdrop */}
             <div 
-              className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity" 
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
               onClick={() => setFiltersOpen(false)}
             />
             
@@ -298,7 +298,7 @@ export default function ShopPage() {
 
         <div className="flex gap-8">
           {/* Sidebar filters — desktop always visible, mobile has slide-out drawer instead */}
-          <aside className="w-60 flex-shrink-0 hidden sm:flex flex-col gap-6">
+          <aside className="w-60 flex-shrink-0 hidden sm:flex flex-col gap-6 sticky top-24 self-start max-h-[calc(100vh-7rem)] overflow-y-auto pb-4">
             {hasFilters && (
               <button onClick={clearAll} className="text-xs text-left underline transition-colors hover:text-[#8b1e2d]" style={{ color: "var(--serena-muted)" }}>
                 Clear all filters

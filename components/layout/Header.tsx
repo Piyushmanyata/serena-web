@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/brand/Logo";
@@ -80,11 +80,27 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { count } = useCart();
+  const scrollRafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 24);
+    const updateScrolled = () => {
+      setScrolled(window.scrollY > 24);
+      scrollRafRef.current = null;
+    };
+
+    const handleScroll = () => {
+      if (scrollRafRef.current !== null) return;
+      scrollRafRef.current = window.requestAnimationFrame(updateScrolled);
+    };
+
+    updateScrolled();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollRafRef.current !== null) {
+        window.cancelAnimationFrame(scrollRafRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -96,10 +112,10 @@ export function Header() {
     <>
       <header
         className={[
-          "fixed top-0 left-0 right-0 z-40 transition-all duration-500",
+          "fixed top-0 left-0 right-0 z-40 transition-all duration-400",
           scrolled
-            ? "bg-[rgba(255,250,243,0.94)] backdrop-blur-xl shadow-[0_4px_24px_rgba(198,161,91,0.15)] border-b border-[rgba(198,161,91,0.2)]"
-            : "bg-transparent backdrop-blur-none border-b border-transparent",
+            ? "bg-[rgba(255,250,243,0.96)] backdrop-blur-2xl shadow-[0_2px_20px_rgba(198,161,91,0.12),0_1px_0_rgba(198,161,91,0.15)] border-b border-[rgba(198,161,91,0.18)]"
+            : "bg-transparent border-b border-transparent",
         ].join(" ")}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

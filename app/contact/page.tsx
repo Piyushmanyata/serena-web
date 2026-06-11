@@ -165,7 +165,7 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-3 pt-2">
                     <button type="submit" className="btn-shimmer py-4 rounded-full font-semibold text-sm transition-all hover:-translate-y-0.5" style={{ background: "var(--serena-deep-burgundy)", color: "var(--serena-cream)", border: "1px solid var(--serena-gold)" }}>
                       Send Message
-                  </button>
+                    </button>
                     <a href={createWhatsAppLink(waMsg)} target="_blank" rel="noopener noreferrer" className="py-4 rounded-full font-semibold text-sm text-white text-center hover-lift transition-all" style={{ background: "#25D366" }}>
                       💬 WhatsApp Instead
                     </a>

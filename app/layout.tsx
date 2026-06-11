@@ -26,14 +26,21 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "SERENA — Custom Jewellery Jars for Your Mood",
+  metadataBase: new URL("https://serena-web-sand.vercel.app"),
+  title: "SERENA — Mystery Jewellery Jars Curated for Your Vibe",
   description:
-    "Shop premium fashion jewellery jars with 5–10 curated pieces. Customize your SERENA jar by aesthetic, colour, jewellery type, and reference photos.",
-  keywords: "jewellery jar, custom jewellery, fashion jewellery, curated jewellery, aesthetic jewellery, SERENA",
+    "Mystery jewellery jars with 5–10 curated pieces styled around your aesthetic. Coquette, Celestial, Gothic, Minimalist & more. Order via WhatsApp or Instagram.",
   openGraph: {
-    title: "SERENA — Custom Jewellery Jars for Your Mood",
-    description: "Pick your vibe. Customize your jar. Receive 5–10 jewellery pieces curated just for you.",
+    title: "SERENA — Mystery Jewellery Jars Curated for Your Vibe",
+    description: "Pick your vibe. Receive 5–10 mystery jewellery pieces curated just for you. Order via WhatsApp or Instagram.",
     type: "website",
+    url: "https://serena-web-sand.vercel.app",
+    siteName: "SERENA",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SERENA — Mystery Jewellery Jars",
+    description: "5–10 curated mystery pieces styled around your aesthetic. Order via WhatsApp.",
   },
 };
 
@@ -61,7 +68,7 @@ export default function RootLayout({
               "name": "SERENA",
               "description": "Shop premium fashion jewellery jars with 5–10 curated pieces. Customize your SERENA jar by aesthetic, colour, jewellery type, and reference photos.",
               "url": "https://serenacurates.com",
-              "telephone": "+918130761109",
+              "telephone": "+919875393417",
               "priceRange": "₹399 - ₹1199",
               "address": {
                 "@type": "PostalAddress",

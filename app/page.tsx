@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type CSSProperties } from "react";
 import Link from "next/link";
 import { JarSVG, Logo } from "@/components/brand/Logo";
 import { JarCard } from "@/components/product/JarCard";
@@ -130,13 +130,20 @@ function HeroSection() {
                 </Link>
               </div>
 
-              <div
-                className="flex items-center gap-6 pt-2 flex-wrap"
-              >
-                {["5–10 mystery pieces", "Curated for your vibe", "WA & Instagram ordering"].map((t) => (
-                  <div key={t} className="flex items-center gap-1.5">
-                    <span className="heartbeat" style={{ color: "var(--serena-gold)", display: "inline-block" }}>✓</span>
-                    <span className="text-xs" style={{ color: "var(--serena-muted)" }}>{t}</span>
+              <div className="flex items-center gap-4 pt-2 flex-wrap">
+                {[
+                  { check: "✓", text: "5–10 mystery pieces" },
+                  { check: "✓", text: "Curated for your vibe" },
+                  { check: "✓", text: "WA & Instagram ordering" },
+                ].map((t) => (
+                  <div key={t.text} className="flex items-center gap-1.5 text-xs" style={{ color: "var(--serena-muted)" }}>
+                    <span
+                      className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0"
+                      style={{ background: "var(--serena-gold)" }}
+                    >
+                      {t.check}
+                    </span>
+                    {t.text}
                   </div>
                 ))}
               </div>
@@ -197,11 +204,11 @@ function HeroSection() {
       </div>
 
       {/* Scroll cue */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce" aria-hidden="true">
-        <span className="text-xs tracking-widest uppercase" style={{ color: "var(--serena-muted)" }}>Scroll</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--serena-gold)" }}>
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5" aria-hidden="true" style={{ animation: "fadeInDown 1s 1.2s ease both" }}>
+        <span className="text-[10px] tracking-[0.25em] uppercase font-medium" style={{ color: "var(--serena-muted)" }}>Scroll</span>
+        <div className="w-px h-8 rounded-full overflow-hidden" style={{ background: "rgba(198,161,91,0.2)" }}>
+          <div className="w-full rounded-full" style={{ height: "50%", background: "var(--serena-gold)", animation: "floatMedium 1.8s ease-in-out infinite" }} />
+        </div>
       </div>
     </section>
   );
@@ -211,10 +218,19 @@ function HeroSection() {
 function MysteryJarSection() {
   const [revealedItems, setRevealedItems] = useState<number[]>([]);
   const [jarShaking, setJarShaking] = useState(false);
+  const [confetti, setConfetti] = useState<Array<{ id: string; left: number; delay: number; size: number; spin: number }>>([]);
 
   function shakeJar() {
     setJarShaking(true);
     setRevealedItems([]);
+    const burst = Array.from({ length: 20 }, (_, i) => ({
+      id: `${Date.now()}-${i}`,
+      left: 12 + Math.random() * 76,
+      delay: Math.random() * 0.15,
+      size: 8 + Math.random() * 8,
+      spin: -80 + Math.random() * 160,
+    }));
+    setConfetti(burst);
     setTimeout(() => {
       setJarShaking(false);
       // Reveal items one by one
@@ -223,6 +239,7 @@ function MysteryJarSection() {
           setRevealedItems((prev) => [...prev, i]);
         }, i * 200);
       });
+      setTimeout(() => setConfetti([]), 1700);
     }, 600);
   }
 
@@ -259,6 +276,22 @@ function MysteryJarSection() {
             {/* Left — Mystery jar interactive */}
             <div className="flex flex-col items-center gap-6">
               <div className="relative">
+                <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+                  {confetti.map((piece) => (
+                    <span
+                      key={piece.id}
+                      className="absolute block jar-confetti"
+                      style={{
+                        left: `${piece.left}%`,
+                        top: "34%",
+                        width: `${piece.size}px`,
+                        height: `${piece.size}px`,
+                        animationDelay: `${piece.delay}s`,
+                        "--spin-angle": `${piece.spin}deg`,
+                      } as CSSProperties}
+                    />
+                  ))}
+                </div>
                 {/* Mystery question marks floating around the jar */}
                 {["?", "?", "?"].map((q, i) => (
                   <span
@@ -291,33 +324,66 @@ function MysteryJarSection() {
                 </div>
 
                 {/* Tap hint */}
-                <p
-                  className="text-center text-xs mt-2 font-medium animate-bounce"
-                  style={{ color: "rgba(198,161,91,0.7)" }}
+                <button
+                  type="button"
+                  onClick={shakeJar}
+                  className="mt-4 w-full rounded-full px-5 py-3 text-center font-serif text-xl sm:text-2xl font-bold tracking-wide transition-all hover:scale-[1.01] active:scale-[0.99]"
+                  style={{
+                    color: "var(--serena-gold-light)",
+                    background: "linear-gradient(180deg, rgba(198,161,91,0.08), rgba(198,161,91,0.02))",
+                    border: "1px solid rgba(198,161,91,0.24)",
+                    boxShadow: "0 10px 30px rgba(82,17,28,0.18)",
+                    textShadow: "0 2px 10px rgba(82,17,28,0.35)",
+                  }}
                 >
                   🫙 Tap the jar to reveal!
-                </p>
+                </button>
               </div>
 
               {/* Revealed items */}
-              <div className="flex flex-wrap justify-center gap-2 min-h-[60px]">
-                {MYSTERY_ITEMS.map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
-                    style={{
-                      background: "rgba(198,161,91,0.15)",
-                      border: "1px solid rgba(198,161,91,0.35)",
-                      color: "var(--serena-champagne)",
-                      opacity: revealedItems.includes(i) ? 1 : 0,
-                      transform: revealedItems.includes(i) ? "scale(1)" : "scale(0)",
-                      transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                    }}
-                  >
-                    <span>{item.emoji}</span>
-                    {item.label}
-                  </div>
-                ))}
+              <div className="flex flex-wrap justify-center gap-2 min-h-[76px] items-center">
+                {revealedItems.length === 0 ? (
+                  <p className="text-sm font-medium italic" style={{ color: "rgba(234,216,183,0.45)" }}>
+                    What&apos;s inside? Tap to see&hellip;
+                  </p>
+                ) : (
+                  MYSTERY_ITEMS.map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+                      style={{
+                        background: "rgba(198,161,91,0.18)",
+                        border: "1px solid rgba(198,161,91,0.38)",
+                        color: "var(--serena-champagne)",
+                        opacity: revealedItems.includes(i) ? 1 : 0,
+                        transform: revealedItems.includes(i) ? "scale(1) translateY(0)" : "scale(0.6) translateY(8px)",
+                        transition: "all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                        boxShadow: revealedItems.includes(i) ? "0 2px 10px rgba(198,161,91,0.15)" : "none",
+                      }}
+                    >
+                      <span>{item.emoji}</span>
+                      {item.label}
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div
+                className="w-full max-w-xl rounded-3xl p-5 sm:p-6 text-center relative overflow-hidden mystery-card-pulse"
+                style={{
+                  background: "linear-gradient(135deg, rgba(198,161,91,0.16), rgba(139,30,45,0.12))",
+                  border: "1px solid rgba(198,161,91,0.28)",
+                }}
+              >
+                <div className="absolute inset-0 pointer-events-none opacity-60" aria-hidden="true" style={{ background: "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.22), transparent 55%)" }} />
+                <div className="relative">
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] mb-2" style={{ color: "var(--serena-gold)" }}>
+                    Lucky Bonus Surprises
+                  </p>
+                  <p className="text-sm sm:text-base leading-relaxed" style={{ color: "var(--serena-champagne)" }}>
+                    {MYSTERY_BONUS_NOTE}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -341,7 +407,6 @@ function MysteryJarSection() {
                   { icon: "🎁", title: "5–10 Curated Pieces", desc: "Hand-picked for your exact aesthetic — no random assortments." },
                   { icon: "🎨", title: "Styled to Go Together", desc: "Every piece inside complements the others. Wear them as a set or individually." },
                   { icon: "✨", title: "The Reveal is the Ritual", desc: "Opening your SERENA jar is an experience, not just a delivery." },
-                  { icon: "🍀", title: "Lucky Bonus Surprises", desc: MYSTERY_BONUS_NOTE },
                 ].map((card, i) => (
                   <div
                     key={i}
@@ -441,21 +506,31 @@ function RitualSection() {
 
 function StatsBand() {
   const stats = [
-    { value: "1,500+", label: "Jars Curated & Unboxed" },
-    { value: "9+", label: "Signature Mood Vibes" },
-    { value: "4.9 ★", label: "Happy Customer Rating" },
+    { value: "1,500+", label: "Jars Curated & Unboxed", icon: "🫙" },
+    { value: "9+", label: "Signature Mood Vibes", icon: "🎨" },
+    { value: "4.9 ★", label: "Happy Customer Rating", icon: "✦" },
   ];
 
   return (
-    <section className="py-12 border-y border-[rgba(198,161,91,0.2)]" style={{ background: "var(--serena-pearl)" }}>
+    <section className="py-14 border-y border-[rgba(198,161,91,0.18)]" style={{ background: "linear-gradient(90deg, var(--serena-cream) 0%, var(--serena-pearl) 50%, var(--serena-cream) 100%)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div className="grid grid-cols-3 gap-4 md:gap-8 text-center">
           {stats.map((stat, i) => (
-            <div key={i} className="flex flex-col gap-1">
-              <span className="font-serif text-3xl md:text-4xl font-extrabold text-[var(--serena-burgundy)] animate-pulse">
+            <div key={i} className="flex flex-col items-center gap-1.5">
+              <span
+                className="text-xl md:text-2xl mb-1 heartbeat"
+                aria-hidden="true"
+                style={{ animationDelay: `${i * 0.4}s`, display: "inline-block" }}
+              >
+                {stat.icon}
+              </span>
+              <span
+                className="font-serif text-2xl sm:text-3xl md:text-4xl font-extrabold"
+                style={{ color: "var(--serena-burgundy)" }}
+              >
                 {stat.value}
               </span>
-              <span className="text-xs uppercase tracking-widest text-[var(--serena-muted)]">
+              <span className="text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: "var(--serena-muted)" }}>
                 {stat.label}
               </span>
             </div>
@@ -533,11 +608,13 @@ function CustomizerPreviewSection() {
                   <button
                     key={vibe}
                     onClick={() => setActiveVibe(vibe)}
-                    className={`text-left p-4 rounded-2xl border transition-all duration-300 interactive-card ${isActive ? "shadow-[0_4px_20px_rgba(198,161,91,0.3)]" : ""}`}
+                    className={`text-left p-4 rounded-2xl border transition-all duration-300 ${isActive ? "" : "hover:border-[rgba(198,161,91,0.4)] hover:bg-[rgba(255,255,255,0.5)]"}`}
                     style={{
-                      background: isActive ? "rgba(255,250,243,0.9)" : "transparent",
+                      background: isActive ? "rgba(255,250,243,0.95)" : "transparent",
                       borderColor: isActive ? "var(--serena-gold)" : "rgba(198,161,91,0.2)",
-                      transform: isActive ? "translateX(4px)" : "",
+                      transform: isActive ? "translateX(6px) scale(1.01)" : "",
+                      boxShadow: isActive ? "0 4px 20px rgba(198,161,91,0.28), 0 1px 0 rgba(255,255,255,0.8) inset" : "",
+                      transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                     }}
                   >
                     <div className="flex items-center gap-3">
@@ -622,29 +699,34 @@ function WhatsInsideSection() {
         </ScrollReveal>
         
         <div className="flex flex-wrap justify-center gap-3 mb-8">
-          {JEWELLERY_TYPES.map((type, i) => (
-            <div
-              key={type}
-              className="glass-card px-5 py-3 flex items-center gap-2 text-sm font-medium cursor-pointer"
-              style={{
-                color: "var(--serena-ink)",
-                transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                transform: hoveredIdx === i ? "translateY(-8px) scale(1.1)" : "translateY(0) scale(1)",
-                boxShadow: hoveredIdx === i ? "0 8px 25px rgba(198,161,91,0.35)" : "",
-                borderColor: hoveredIdx === i ? "rgba(198,161,91,0.7)" : "",
-              }}
-              onMouseEnter={() => setHoveredIdx(i)}
-              onMouseLeave={() => setHoveredIdx(null)}
-            >
-              <span
-                className={hoveredIdx === i ? "jelly-bounce" : ""}
-                style={{ display: "inline-block" }}
+          {JEWELLERY_TYPES.map((type, i) => {
+            const isHov = hoveredIdx === i;
+            return (
+              <div
+                key={type}
+                className="glass-card px-5 py-3 flex items-center gap-2.5 text-sm font-medium cursor-pointer select-none"
+                style={{
+                  color: isHov ? "var(--serena-deep-burgundy)" : "var(--serena-ink)",
+                  transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                  transform: isHov ? "translateY(-9px) scale(1.08)" : "translateY(0) scale(1)",
+                  boxShadow: isHov ? "0 10px 28px rgba(198,161,91,0.35), 0 1px 0 rgba(255,255,255,0.9) inset" : "",
+                  borderColor: isHov ? "rgba(198,161,91,0.7)" : undefined,
+                  background: isHov ? "rgba(255,250,243,0.98)" : undefined,
+                }}
+                onMouseEnter={() => setHoveredIdx(i)}
+                onMouseLeave={() => setHoveredIdx(null)}
               >
-                {emojis[i] || "✨"}
-              </span>
-              {type}
-            </div>
-          ))}
+                <span
+                  className={isHov ? "jelly-bounce" : ""}
+                  style={{ display: "inline-block", fontSize: "1.1rem" }}
+                  aria-hidden="true"
+                >
+                  {emojis[i] || "✨"}
+                </span>
+                {type}
+              </div>
+            );
+          })}
         </div>
 
         {/* Lucky bonus banner */}
@@ -805,7 +887,7 @@ function TestimonialsSection() {
           </div>
 
           {/* Carousel Container */}
-          <div className="relative min-h-[220px] flex items-center justify-center">
+          <div className="relative min-h-[240px] flex items-center justify-center">
             {TESTIMONIALS.map((t, i) => {
               const isActive = activeIdx === i;
               return (
@@ -814,25 +896,28 @@ function TestimonialsSection() {
                   className="absolute inset-x-0 transition-all duration-700 ease-in-out flex flex-col items-center text-center px-4 sm:px-12"
                   style={{
                     opacity: isActive ? 1 : 0,
-                    transform: isActive ? "translateY(0) scale(1)" : "translateY(16px) scale(0.96)",
+                    transform: isActive ? "translateY(0) scale(1)" : "translateY(20px) scale(0.95)",
                     pointerEvents: isActive ? "auto" : "none",
                   }}
                 >
-                  <div className="flex gap-1 mb-4 justify-center">
+                  <div className="flex gap-0.5 mb-5 justify-center">
                     {[...Array(5)].map((_, s) => (
-                      <span key={s} style={{ color: "var(--serena-gold)" }}>★</span>
+                      <span key={s} className="text-lg" style={{ color: "var(--serena-gold)" }}>★</span>
                     ))}
                   </div>
-                  <p className="font-serif italic text-lg sm:text-2xl leading-relaxed max-w-2xl mb-6" style={{ color: "var(--serena-deep-burgundy)" }}>
+                  <p className="font-serif italic text-lg sm:text-xl md:text-2xl leading-relaxed max-w-2xl mb-6" style={{ color: "var(--serena-deep-burgundy)" }}>
                     &ldquo;{t.text}&rdquo;
                   </p>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white heartbeat" style={{ background: "var(--serena-burgundy)" }}>
+                    <div
+                      className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+                      style={{ background: "linear-gradient(135deg, var(--serena-burgundy), var(--serena-deep-burgundy))", boxShadow: "0 0 0 3px rgba(198,161,91,0.25)" }}
+                    >
                       {t.name[0]}
                     </div>
                     <div className="text-left">
                       <p className="text-sm font-semibold" style={{ color: "var(--serena-ink)" }}>{t.name}</p>
-                      <p className="text-xs" style={{ color: "var(--serena-muted)" }}>{t.vibe} Jar</p>
+                      <p className="text-xs" style={{ color: "var(--serena-gold)" }}>{t.vibe} Jar ✦</p>
                     </div>
                   </div>
                 </div>
@@ -846,8 +931,14 @@ function TestimonialsSection() {
               <button
                 key={i}
                 onClick={() => setActiveIdx(i)}
-                aria-label={`Go to slide ${i + 1}`}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${activeIdx === i ? "w-6 bg-[var(--serena-gold)]" : "bg-[rgba(198,161,91,0.3)]"}`}
+                aria-label={`Go to testimonial ${i + 1}`}
+                style={{
+                  width: activeIdx === i ? "24px" : "10px",
+                  height: "10px",
+                  borderRadius: "9999px",
+                  background: activeIdx === i ? "var(--serena-gold)" : "rgba(198,161,91,0.3)",
+                  transition: "all 0.3s ease",
+                }}
               />
             ))}
           </div>
@@ -866,7 +957,7 @@ function FinalCTASection() {
       </div>
       {/* Scattered background emojis */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {["bold", "✨","💎"].includes("✨") && ["✨","💎"].map((e, i) => (
+        {["✨","💎"].map((e, i) => (
           <span key={i} className="absolute text-xl opacity-15 float-around" style={{ left: `${30 + i * 40}%`, top: `${20 + (i % 2) * 50}%`, animationDelay: `${i * 1.2}s` }}>{e}</span>
         ))}
       </div>
