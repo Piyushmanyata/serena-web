@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Camera, MessageCircle } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { createWhatsAppLink, generalMessage } from "@/lib/whatsapp";
 import { SERENA_CONTACT, SERENA_CO_OWNER, INSTAGRAM_URL } from "@/lib/constants";
@@ -33,7 +34,8 @@ export function Footer() {
                 className="text-sm flex items-center gap-2 transition-colors hover:text-[#c6a15b]"
                 style={{ color: "rgba(234,216,183,0.8)" }}
               >
-                📸 {SERENA_CONTACT.instagram}
+                <Camera size={16} aria-hidden="true" />
+                {SERENA_CONTACT.instagram}
               </a>
               <a
                 href={createWhatsAppLink(generalMessage())}
@@ -42,7 +44,8 @@ export function Footer() {
                 className="text-sm flex items-center gap-2 transition-colors hover:text-[#c6a15b]"
                 style={{ color: "rgba(234,216,183,0.8)" }}
               >
-                💬 WhatsApp: {SERENA_CONTACT.phone}
+                <MessageCircle size={16} aria-hidden="true" />
+                WhatsApp: {SERENA_CONTACT.phone}
               </a>
             </div>
           </div>
@@ -89,7 +92,8 @@ export function Footer() {
                 className="btn-shimmer inline-flex items-center justify-center gap-2 py-3 px-5 rounded-full text-sm font-medium text-white"
                 style={{ background: "#25D366" }}
               >
-                💬 WhatsApp Manyata
+                <MessageCircle size={16} aria-hidden="true" />
+                WhatsApp Manyata
               </a>
               <a
                 href={INSTAGRAM_URL}
@@ -98,7 +102,8 @@ export function Footer() {
                 className="btn-shimmer inline-flex items-center justify-center gap-2 py-3 px-5 rounded-full text-sm font-medium text-white"
                 style={{ background: "linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" }}
               >
-                📸 Instagram @_serena_.co
+                <Camera size={16} aria-hidden="true" />
+                Instagram @_serena_.co
               </a>
               <a
                 href={`https://wa.me/${SERENA_CO_OWNER.whatsapp}?text=${encodeURIComponent("Hi Hridyanshi! I want to order a SERENA jar.")}`}
@@ -107,7 +112,8 @@ export function Footer() {
                 className="btn-shimmer inline-flex items-center justify-center gap-2 py-3 px-5 rounded-full text-sm font-medium text-white border border-[rgba(198,161,91,0.3)]"
                 style={{ background: "var(--serena-burgundy)" }}
               >
-                💬 WhatsApp Hridyanshi
+                <MessageCircle size={16} aria-hidden="true" />
+                WhatsApp Hridyanshi
               </a>
             </div>
           </div>

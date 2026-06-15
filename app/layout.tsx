@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter, Playfair_Display } from "next/font/google";
+import { Inter, Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -12,16 +12,10 @@ const inter = Inter({
   display: "swap",
 });
 
-const playfair = Playfair_Display({
+const display = Libre_Baskerville({
   subsets: ["latin"],
+  weight: ["400", "700"],
   variable: "--font-playfair",
-  display: "swap",
-});
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-cormorant",
   display: "swap",
 });
 
@@ -57,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${cormorant.variable} h-full`}>
+    <html lang="en" className={`${inter.variable} ${display.variable} h-full`}>
       <head>
         <script
           type="application/ld+json"
